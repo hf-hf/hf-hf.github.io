@@ -6,13 +6,13 @@ tags:
     - nginx
 ---
 
-##  情景：
+## 情景
 
 今天运维大哥来找，某某服务器磁盘报警啦。
 
 ``` bash
-# df -m
-``` 
+df -m
+```
 
 看了一下/dev/vda1果然快满了，磁盘使用率97%。。。
 
@@ -21,12 +21,12 @@ tags:
 查一下那个目录占用空间比较大
 
 ``` bash
-# du -h --max-depth=1
-``` 
+du -h --max-depth=1
+```
 
 噼里啪啦一阵之后发现nginx下的access.log居然有13G，这还能忍？赶紧压缩移到别的地方~
 
-## 原因：
+## 原因
 
 nginx会按照nginx.conf的配置生成access.log和error.log，随着访问量的增长，日志文件会越来越大，既会影响访问的速度(写入日志时间延长)，
 也会增加查找日志的难度，nginx没有这种按天或更细粒度生成日志的机制。
@@ -41,7 +41,6 @@ logrotate程序是一个日志文件管理工具。用来把旧的日志文件�
 logrotate程序还可以用于压缩日志文件，以及发送日志到指定的E-mail 。
 
 ## 配置选项说明
-``` bash
 compress：通过gzip 压缩转储旧的日志
 nocompress：不需要压缩时，用这个参数 
 copytruncate：用于还在打开中的日志文件，把当前日志备份并截断 
@@ -65,7 +64,6 @@ weekly：指定转储周期为每周
 monthly：指定转储周期为每月 
 rotate count：指定日志文件删除之前转储的次数，0 指没有备份，5 指保留5 个备份 
 size size：当日志文件到达指定的大小时才转储，Size 可以指定 bytes (缺省)以及KB (sizek)或者MB
-``` 
 
 ## 命令参数说明
 ``` bash
@@ -88,9 +86,9 @@ Usage: logrotate [OPTION...] <configfile>
 ```
 
 /etc/logrotate.d/nginx
+
 ``` bash
-nginx
-{
+nginx {
     daily           #调用频率，有：daily，weekly，monthly可选
     rotate 30       #一次将存储30个归档日志。对于第31个归档，时间最久的归档将被删除。
     compress        #通过gzip 压缩转储旧的日志 
@@ -107,7 +105,7 @@ nginx
 ## 测试配置手动执行logrotate
 ``` bash
 # 强制执行（-f = force），冗长的-v(-v =verbose），注意调试信息默认携带-v；
-# logrotate -vf /etc/logrotate.d/nginx
+logrotate -vf /etc/logrotate.d/nginx
 ```
 
 ## 输出如下，查看日志文件夹生成已压缩的日志：
@@ -116,7 +114,7 @@ nginx
 
 ## Cron定时执行logrotate
 
-配置文件测试完毕，logrotate实际使用一般都是通过cron来定时执行；
+配置文件测试完毕，logrotate实际使用一般都是通过cron来定时执行。
 
 ``` bash
 # cat /etc/cron.daily/logrotate
