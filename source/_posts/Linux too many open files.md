@@ -8,13 +8,12 @@ tags:
 
 ## 问题
 
-今天发现某netty服务总是报Too many open files，因为是新上的服务，设备量并不多，不应该啊，T.T
+今天发现某netty服务总是报too many open files，因为是新上的服务，设备量并不多，不应该啊，T.T
 
 ## 原因
 
 调查一下发生原因：
-too many open files，字面意思上看就是打开了过多的文件，不过在linux下files并不只是文件的意思，
-像Socket(Tcp、Udp)连接，开启监听的端口这些都属于file，所以有时候也可以叫做句柄(handle)，这个错误也可以描述为句柄数（file-handles）超出系统限制。 
+too many open files，字面意思上看就是打开了过多的文件，不过在linux下files并不只是文件的意思，像socket(Tcp、Udp)连接，开启监听的端口这些都属于file，所以有时候也可以叫做句柄(handle)，这个错误也可以描述为句柄数（file-handles）超出系统限制。 
 
 从上述文字描述可以看出，出现这句提示的原因就是程序打开的Socket连接数量超过系统设定值。
 
@@ -136,10 +135,6 @@ vim /etc/security/limits.conf
 * hard nofile 65535  
 ```
 
-PS：“nofile”项有两个可能的限制措施。就是项下的hard和soft。 
-要使修改过得最大打开文件数生效，必须对这两种限制进行设定。 
-如果使用”-“字符设定, 则hard和soft设定会同时被设定。
-
 ## 深度调查
 
 使用命令打印程序open files详细日志，进行问题排查。
@@ -179,23 +174,11 @@ ESTABLISHED的意思是建立连接。表示两台机器正在通信。
 对方主动关闭连接或者网络异常导致连接中断，这时我方的状态会变成CLOSE_WAIT 此时我方要调用close()来使得连接正确关闭。
     
 ### 4、TIME_WAIT
-我方主动调用close()断开连接，收到对方确认后状态变为TIME_WAIT。TCP协议规定TIME_WAIT状态会一直持续2MSL(即两倍的分段最大生存期)，
-以此来确保旧的连接状态不会对新连接产生影响。处于TIME_WAIT状态的连接占用的资源不会被内核释放，所以作为服务器，在可能的情况下，
-尽量不要主动断开连接，以减少TIME_WAIT状态造成的资源浪费。
-目前有一种避免TIME_WAIT资源浪费的方法，就是关闭socket的LINGER选项。但这种做法是TCP协议不推荐使用的，在某些情况下这个操作可能会带来错误。
+我方主动调用close()断开连接，收到对方确认后状态变为TIME_WAIT。TCP协议规定TIME_WAIT状态会一直持续2MSL(即两倍的分段最大生存期)，以此来确保旧的连接状态不会对新连接产生影响。处于TIME_WAIT状态的连接占用的资源不会被内核释放，所以作为服务器，在可能的情况下，尽量不要主动断开连接，以减少TIME_WAIT状态造成的资源浪费。目前有一种避免TIME_WAIT资源浪费的方法，就是关闭socket的LINGER选项。但这种做法是TCP协议不推荐使用的，在某些情况下这个操作可能会带来错误。
 
 ### 5、SYN_SENT状态
-SYN_SENT状态表示请求连接，当你要访问其它的计算机的服务时首先要发个同步信号给该端口，此时状态为SYN_SENT，
-如果连接成功了就变为 ESTABLISHED，此时SYN_SENT状态非常短暂。但如果发现SYN_SENT非常多且在向不同的机器发出，
-那你的机器可能中了冲击波或震荡波之类的病毒了。这类病毒为了感染别的计算机，它就要扫描别的计算机，
-在扫描的过程中对每个要扫描的计算机都要发出了同步请求，这也是出现许多SYN_SENT的原因。
+SYN_SENT状态表示请求连接，当你要访问其它的计算机的服务时首先要发个同步信号给该端口，此时状态为SYN_SENT，如果连接成功了就变为 ESTABLISHED，此时SYN_SENT状态非常短暂。但如果发现SYN_SENT非常多且在向不同的机器发出，那你的机器可能中了冲击波或震荡波之类的病毒了。这类病毒为了感染别的计算机，它就要扫描别的计算机，在扫描的过程中对每个要扫描的计算机都要发出了同步请求，这也是出现许多SYN_SENT的原因。
     
-根据TCP协议定义的3次握手断开连接规定,发起Socket主动关闭的一方Socket将进入TIME_WAIT状态，
-TIME_WAIT状态将持续2个MSL(Max Segment Lifetime)，在Windows下默认为4分钟,
-即240秒，TIME_WAIT状态下的socket不能被回收使用。
-具体现象是对于一个处理大量短连接的服务器，如果是由服务器主动关闭客户端的连接,
-将导致服务器端存在大量的处于TIME_WAIT状态的socket，甚至比处于Established状态下的socket多的多，
-严重影响服务器的处理能力,甚至耗尽可用的socket，停止服务。
-TIME_WAIT是TCP协议用以保证被重新分配的socket不会受到之前残留的延迟重发报文影响的机制，是必要的逻辑保证。
+根据TCP协议定义的3次握手断开连接规定,发起Socket主动关闭的一方Socket将进入TIME_WAIT状态，TIME_WAIT状态将持续2个MSL(Max Segment Lifetime)，在Windows下默认为4分钟,即240秒，TIME_WAIT状态下的socket不能被回收使用。具体现象是对于一个处理大量短连接的服务器，如果是由服务器主动关闭客户端的连接,将导致服务器端存在大量的处于TIME_WAIT状态的socket，甚至比处于Established状态下的socket多的多，严重影响服务器的处理能力,甚至耗尽可用的socket，停止服务。TIME_WAIT是TCP协议用以保证被重新分配的socket不会受到之前残留的延迟重发报文影响的机制，是必要的逻辑保证。
 
 
