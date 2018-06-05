@@ -88,8 +88,8 @@ livere_uid: MTAyMC8zMzEyNC85Njgz
 
 # search
 algolia:
-  applicationID: 'Y7P0TYJHBB'
-  apiKey: 'cbc22850d511cda29ca60c190d2318c4'
-  adminApiKey: 'd7b04de9b398ff6298763c224be9626f'
+  applicationID: '77ZW8HG1F0'
+  apiKey: '924aaf9b16831d3af864330abb1b94cf'
+  adminApiKey: '899a393ecde0b418508c509e472d97fd'
   indexName: 'github'
   chunkSize: 5000
