@@ -54,7 +54,7 @@ file locks                      (-x) unlimited
 -bash: lsof: command not found
 ```
 
-0.0，没有安装lsof,yum安装一下
+0.0，没有安装lsof，yum安装一下
 
 ```
 [root@localhost ~]# yum install lsof
