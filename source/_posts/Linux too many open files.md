@@ -4,6 +4,7 @@ date: 2018-06-05 14:38:14
 tags:
     - linux
     - too many open files
+categories: 运维日志
 ---
 
 ## 问题

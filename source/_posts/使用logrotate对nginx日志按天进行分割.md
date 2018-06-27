@@ -4,6 +4,7 @@ date: 2018-05-17 11:04:43
 tags:
     - logrotate
     - nginx
+categories: 运维日志
 ---
 
 ## 情景
