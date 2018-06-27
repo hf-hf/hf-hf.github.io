@@ -8,7 +8,7 @@ categories: 运维日志
 ---
 
 ## 情景
-    Mysql新增数据表，字段类型为varchar长度较长，且该类型字段较多有200多个，进行create时报错Row size too large (> 8126)。
+Mysql新增数据表，字段类型为varchar长度较长，且该类型字段较多有200多个，进行create时报错Row size too large (> 8126)。
 
 ## 解决方案
-    在新建数据表create语句前追加：set innodb_strict_mode=0;再新建即可。
+在新建数据表create语句前追加：set innodb_strict_mode=0;再新建即可。
