@@ -13,7 +13,8 @@ timezone:
 # URL
 ## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'
 #url: http://yoursite.com
-url: https://hf-hf.github.io
+#url: https://hf-hf.github.io
+url: http://hunfan.top/
 root: /
 permalink: :year/:month/:day/:title/
 permalink_defaults:
@@ -79,10 +80,11 @@ theme: next
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
 deploy:
-  type: git
+- type: git
   #repo: https://github.com/hf-hf/hf-hf.github.io.git
   repo: git@github.com:hf-hf/hf-hf.github.io.git
   branch: master
+- type: baidu_url_submitter
   
 livere_uid: MTAyMC8zMzEyNC85Njgz
 
@@ -93,3 +95,16 @@ algolia:
   adminApiKey: '899a393ecde0b418508c509e472d97fd'
   indexName: 'github'
   chunkSize: 5000
+  
+# 自动生成sitemap
+#sitemap:
+#    path: sitemap.xml
+#baidusitemap:
+#    path: baidusitemap.xml
+    
+# Baidu auto submit
+baidu_url_submit:
+    count: 1 
+    host: hunfan.top 
+    token: cQOgd9p3yXltTzQn
+    path: baidu_urls.txt
