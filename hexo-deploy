@@ -1,1 +1,1 @@
-hexo clean && hexo g --deploy
+hexo clean && hexo g --deploy && export HEXO_ALGOLIA_INDEXING_KEY="924aaf9b16831d3af864330abb1b94cf" && hexo algolia
