@@ -104,7 +104,7 @@ algolia:
     
 # Baidu auto submit
 baidu_url_submit:
-    count: 1 
+    count: 3 
     host: hunfan.top 
     token: cQOgd9p3yXltTzQn
     path: baidu_urls.txt
