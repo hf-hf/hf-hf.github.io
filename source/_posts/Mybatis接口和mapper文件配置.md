@@ -2,7 +2,7 @@
 title: Mybatis接口和mapper文件配置
 date: 2018-07-17 16:14:57
 tags:
-    -- mybatis
+    - mybatis
 ---
 
 ### 配置说明

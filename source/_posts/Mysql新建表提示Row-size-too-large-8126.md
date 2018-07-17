@@ -2,8 +2,7 @@
 title: Mysql新建表提示Row size too large (> 8126)
 date: 2018-06-27 16:59:32
 tags:
-    -- Mysql
-    -- too large
+    - Mysql
 categories: 运维日志
 ---
 
