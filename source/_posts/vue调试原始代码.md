@@ -17,13 +17,13 @@ Webpack打包生成的.map后缀文件，使得我们的开发调试更加方便
 
 ### source maps
 
-![source maps](//upload/vue调试原始代码/vue调试原始代码_1.png)
+![source maps](/upload/vue调试原始代码/vue调试原始代码_1.png)
 
 ### 开发工具(Devtool)
 
 此选项控制是否生成，以及如何生成 Source Map。以下是官方文档的配置选项：
 
-![devtool](//upload/vue调试原始代码/vue调试原始代码_2.png)
+![devtool](/upload/vue调试原始代码/vue调试原始代码_2.png)
 
 devtool配置选项
 

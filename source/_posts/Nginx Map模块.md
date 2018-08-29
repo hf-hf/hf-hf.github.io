@@ -21,7 +21,7 @@ map $http_origin $corsHost {
 Map在这里意思为“映射”，即将$http_origin和$corsHost建立映射关系。
 情景中的例子，其映射规则如下：
 1) 花括号中第一行default 0，是一个特殊的匹配条件，当其他条件都不满足时，$corsHost会映射为0。
-2) 第二行"~https://www.mtdhb.com" https://www.mtdhb.com;，该行表示若$http_origin以https://www.mtdhb.com开头，则将$corsHost映射为$corsHost。
+2) 第二行"~https://www.mtdhb.com" https://www.mtdhb.com; ，该行表示若$http_origin以https://www.mtdhb.com开头，则将$corsHost映射为$corsHost。
 3) 第三、四行与第二行映射方式相同。
 
 该段映射规则以Java代码描述如下：
