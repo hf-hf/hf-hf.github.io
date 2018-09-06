@@ -30,21 +30,21 @@ npm install --save hexo-algolia
 ## algolia配置流程
 通过[algolia官网](https://www.algolia.com/users/sign_up)注册，有github账号的可以直接登录。
 
-![algolia_1.png](/upload/algolia_1.png)
+![algolia_1.png](/upload/algolia/algolia_1.png)
 
 登录成功进入控制台后，点击右上角创建index
 
-![algolia_2.png](/upload/algolia_2.png)
+![algolia_2.png](/upload/algolia/algolia_2.png)
 
 通过左侧菜单进入API Keys页面，记录下里面的信息，之后需要写到hexo的站点配置文件中
 
-![algolia_3.png](/upload/algolia_3.png)
+![algolia_3.png](/upload/algolia/algolia_3.png)
 
 选择ALL API KEYS，给当前Key追加权限，如下图所示：
 
-![algolia_4.png](/upload/algolia_4.png)
+![algolia_4.png](/upload/algolia/algolia_4.png)
 
-![algolia_5.png](/upload/algolia_5.png)
+![algolia_5.png](/upload/algolia/algolia_5.png)
 
 （注意这一点，目前大部分教程都缺少这部分）
 
@@ -64,11 +64,11 @@ algolia:
 
 在git bash中执行hexo algolia，出现下图信息则表示上传成功
 
-![algolia_7.png](/upload/algolia_7.png)
+![algolia_7.png](/upload/algolia/algolia_7.png)
 
 若出现如下提示，表示需要多执行一步操作
 
-![algolia_8.png](/upload/algolia_8.png)
+![algolia_8.png](/upload/algolia/algolia_8.png)
 
 实际配置的时候也在这里卡了一下，网上的教程上对于这这部分都没有详细解释，最后还是参照官方说明
 
@@ -76,15 +76,15 @@ algolia:
 
 原来新版本的hexo-algolia为了安全性，必须先配置一个environment variable，如下图所示：
 
-![algolia_11.png](/upload/algolia_11.png)
+![algolia_11.png](/upload/algolia/algolia_11.png)
 
 多执行一步export HEXO_ALGOLIA_INDEXING_KEY='your Search-Only API Key'后，重新hexo algolia即可
 
-![algolia_9.png](/upload/algolia_9.png)
+![algolia_9.png](/upload/algolia/algolia_9.png)
 
 上传成功后查看algolia上对应index，也会显示出相应信息
 
-![algolia_6.png](/upload/algolia_6.png)
+![algolia_6.png](/upload/algolia/algolia_6.png)
 
 之后在\themes\next下找到_config.yml，修改配置如下：
 
@@ -102,4 +102,4 @@ algolia_search:
 
 重新发布hexo g --deploy，再看看已经可以进行搜索了
 
-![algolia_10.png](/upload/algolia_10.png)
+![algolia_10.png](/upload/algolia/algolia_10.png)
