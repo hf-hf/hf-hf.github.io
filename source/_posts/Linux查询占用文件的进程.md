@@ -18,6 +18,9 @@ COMMAND  PID USER   FD   TYPE DEVICE SIZE/OFF    NODE NAME
 java    4606 root    6w   REG  253,1   238739 2490940 /tmp/spring.log
 ```
 
+## 解决方案
+启动时增加参数-Djava.io.tmpdir=自定义目录，暂时将生成的临时文件单独放到一个目录，并配置脚本将程序每天进行重启。
+
 ## lsof语法说明
 ```
 lsof -i 用以显示符合条件的进程情况
