@@ -35,6 +35,8 @@ java       9736  9828    root 2263r      REG   253,1   4321205    171  0033 /ala
 今天抽出空来继续调查这个问题，最后在Github上定位到了具体的原因。原来是Spring boot v1.4.5 ~ v2.1.0.M2之间的版本，由于ServletContext获取静态资源的行为发生了改变，导致在Spring Boot临时目录生成的很多jar_cache.tmp文件，它们是被打开的并且已删除的文件，只能通过lsof才能查看，这些文件直到应用程序退出才会被释放，所以它们会在程序运行期间一直占据空间并填满磁盘。
 
 [Retrieving static resource via ServletContext root creates (many) jar_cache tmp files #9866](https://github.com/spring-projects/spring-boot/issues/9866)
+
+该问题在master v2.1.0.M2被修复，[Remove Servlet-specific static locations](https://github.com/spring-projects/spring-boot/commit/9dd3fb70e290bd426cd8377036f7174f9d8ddf3d)
    
 ## 解决方案
 1、升级/降级Spring Boot版本，使用低于v1.4.4或者高于v2.1.0.M2的版本。
