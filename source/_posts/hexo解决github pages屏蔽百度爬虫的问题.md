@@ -1,8 +1,8 @@
 ---
-title: 解决github pages屏蔽百度爬虫的问题
+title: hexo解决github pages屏蔽百度爬虫的问题
 date: 2018-09-11 09:47:18
 tags:
-    - github
+    - hexo
 ---
 
 ![homePage](/upload/homePage/20180911104701.jpg)
