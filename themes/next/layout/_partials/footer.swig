@@ -21,6 +21,11 @@
   {% endif %}
 </div>
 
+{% if theme.codingcopyright %}
+  <div class="powered-by">{#
+  #}{{ __('footer.powered', '<a class="theme-link" href="https://coding.net/pages">Hosted by CODING Pages</a>') }}{#
+#}</div>
+
 {% if theme.copyright %}
   <div class="powered-by">{#
   #}{{ __('footer.powered', '<a class="theme-link" href="https://hexo.io">Hexo</a>') }}{#
