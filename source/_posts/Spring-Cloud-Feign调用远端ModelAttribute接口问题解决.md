@@ -124,7 +124,7 @@ public class FeignEncoder {
             if (null != clazz.getAnnotation(FeignModelAttribute.class) ) {
                 modelAttributeParamEncoder(clazz,object,template);
             } else {
-                defaultEncoder.encode(object, bodyType, template);
+                springEncoder.encode(object, bodyType, template);
             }
         };
     }
