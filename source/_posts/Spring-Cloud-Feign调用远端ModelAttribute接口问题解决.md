@@ -117,7 +117,8 @@ public class FeignEncoder {
      */
     @Bean
     public Encoder encoder() {
-        Encoder defaultEncoder = new Encoder.Default();
+        SpringEncoder springEncoder = new SpringEncoder(messageConverters);
+        //Encoder defaultEncoder = new Encoder.Default();
         return (object, bodyType, template) -> {
             Class clazz = (Class)bodyType;
             if (null != clazz.getAnnotation(FeignModelAttribute.class) ) {
