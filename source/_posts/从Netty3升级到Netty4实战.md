@@ -260,3 +260,6 @@ public class ReceiveMessageChannelHandler extends ChannelDuplexHandler {
 消息读取方面，原来Netty3的ChannelBuffer已经由ByteBuf，并且Netty4还专门将其拆分出一个单独的包，其意义在于即使你不用Netty也可以方便的使用ByteBuf处理字节数据。
 
 消息发送方面，Netty3中通过ctx.getChannel().write(ChannelBuffers.wrappedBuffer(replyMsg), e.getRemoteAddress())进行消息发送，需要指定remoteAddress，在Netty4中改变为了ctx.channel().writeAndFlush(Unpooled.buffer().writeBytes(replyMsg))，将数据写入缓冲区并刷新缓冲区，而且也不需要指定需要指定remoteAddress。
+
+## 结语
+这次对Netty3升级Netty4的过程进行了简单的记录，相同功能在Netty3和Netty4下的实现代码都进行了罗列比对，如果你也恰好遇到相同的问题，希望能对你有所帮助。
