@@ -2,7 +2,7 @@
 title: Idea修改import顺序，与Eclipse一致
 date: 2018-06-21 18:25:50
 tags:
-    - intellij Idea
+    - idea
     - import
     - Eclipse
 ---
