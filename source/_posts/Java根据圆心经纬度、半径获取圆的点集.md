@@ -351,7 +351,7 @@ public class GisUtils {
             /**
              * 转换成经纬度
              */
-            tmpPoint = xYtoLB(new Point(centerPoint.getLat(),centerPoint.getLng()),
+            tmpPoint = xYtoLB(new Point(centerPoint.getLng(),centerPoint.getLat()),
                     new Point(dx, dy));
             points.add(new Point(roundDown6(tmpPoint.getLng()),
                     roundDown6(tmpPoint.getLat())));
