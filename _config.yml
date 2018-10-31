@@ -86,7 +86,7 @@ deploy:
   #branch: master
   repo: 
     github: git@github.com:hf-hf/hf-hf.github.io.git
-    coding: https://git.coding.net/hf-hf/hf-hf.git
+    coding: git@git.coding.net:hf-hf/hf-hf.git
   branch: master
 - type: baidu_url_submitter
   
