@@ -87,10 +87,6 @@ Complete!
 │   └── properties
 │       └── plugins.properties
 ├── Finished
-├── framework-1.0.0-181025.jar
-├── framework-1.0.0-181030.jar
-├── framework-1.0.0-18103102.jar
-├── framework-1.0.0-181031.jar
 ├── framework-1.0.0.jar
 ├── logback-spring.xml
 ├── Package
@@ -99,12 +95,12 @@ Complete!
 ├── Running
 └── test
 
-4 directories, 19 files
+4 directories, 15 files
 ```
 
 将目录结构输出到文件中。
 ```
 [root@dd iot]# tree -L 3 >>  test
-[root@didi4 iot]# cat test
+[root@dd iot]# cat test
 //...省略，输出结果与上方内容相同
 ```
