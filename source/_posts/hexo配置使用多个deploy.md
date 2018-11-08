@@ -4,6 +4,8 @@ date: 2018-07-14 13:53:15
 tags:
     - hexo
     - deploy
+categories: 
+	- hexo
 ---
 
 ## hexo配置使用多个deploy

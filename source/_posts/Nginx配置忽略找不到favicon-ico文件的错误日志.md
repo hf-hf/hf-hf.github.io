@@ -3,6 +3,7 @@ title: Nginx配置忽略找不到favicon.ico文件的错误日志
 date: 2018-11-08 13:52:03
 tags:
     - nginx
+categories: 运维日志
 ---
 ![homePage](/upload/homePage/20181108142102.jpg)
 <!--more-->

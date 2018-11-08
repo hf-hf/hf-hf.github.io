@@ -3,6 +3,7 @@ title: Linux查询占用文件的进程
 date: 2018-09-06 15:52:41
 tags:
     - linux
+categories: 运维日志
 ---
 ![homePage](/upload/homePage/20180906170335.jpg)
 <!--more-->

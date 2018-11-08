@@ -3,6 +3,7 @@ title: Linux以树形显示文件目录结构
 date: 2018-11-07 11:21:50
 tags:
     - linux
+categories: 运维日志
 ---
 ![homePage](/upload/homePage/20181107114302.jpg)
 <!--more-->

@@ -3,6 +3,8 @@ title: hexo更换电脑后重新安装
 date: 2018-11-05 14:12:31
 tags:
     - hexo
+categories: 
+	- hexo
 ---
 
 ![homePage](/upload/homePage/20181105161102.jpg)

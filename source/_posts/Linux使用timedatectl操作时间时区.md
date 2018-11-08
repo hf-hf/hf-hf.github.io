@@ -4,6 +4,7 @@ date: 2018-08-07 18:03:33
 tags:
     - linux
     - timedatectl
+categories: 运维日志
 ---
 
 ## 情景
