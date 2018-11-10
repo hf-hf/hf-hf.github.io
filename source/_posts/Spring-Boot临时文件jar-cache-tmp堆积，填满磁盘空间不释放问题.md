@@ -3,6 +3,7 @@ title: Spring Boot临时文件jar_cache.tmp堆积，填满磁盘空间不释放�
 date: 2018-09-07 11:41:50
 tags:
     - Spring Boot
+categories: 运维日志
 ---
 ![homePage](/upload/homePage/20180907140001.jpg)
 <!--more-->
