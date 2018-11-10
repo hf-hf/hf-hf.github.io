@@ -5,6 +5,8 @@ tags:
     - Spring Boot
 categories: 运维日志
 ---
+![homePage](/upload/homePage/20181110231002.jpg)
+<!--more-->
 
 ## 情景
 在服务器/tmp目录会生成spring.log文件，占用系统磁盘资源，手动删除后因程序仍占用该文件，必须重启服务后这部分空间才会得到释放，spring.log文件中的内容为相应Spring Boot服务的debug日志。
@@ -104,23 +106,23 @@ spring.log.7
 
 可以看到仅在base.xml和LogFile的toString方法中有spring.log。
 
-![Spring-Boot-Logback_2.png](/upload/homePage/Spring-Boot-Logback/Spring-Boot-Logback_2.png)
+![Spring-Boot-Logback_2.png](/upload/Spring-Boot-Logback/Spring-Boot-Logback_2.png)
 
 通过base.xml第9行，我们可以看到应该就是这个配置文件导致了spring.log的生成。
 
 再继续搜索一下哪里调用的LogFile，LogFile调用的地方就比较多了，我们每个都点开看一下，最后在下图的类中发现了关键的信息。
 
-![Spring-Boot-Logback_3.png](/upload/homePage/Spring-Boot-Logback/Spring-Boot-Logback_3.png)
+![Spring-Boot-Logback_3.png](/upload/Spring-Boot-Logback/Spring-Boot-Logback_3.png)
 
 在上图中可以看到有一个类名为DefaultLogbackConfiguration，在该类第85行，有调用LogFile的toString方法。
 
 那么我们怀疑可能就是这个类追加的spring.log文件内容，再看一下该类的注释，在其注释上有一行信息，内容如下：
 
-![Spring-Boot-Logback_4.png](/upload/homePage/Spring-Boot-Logback/Spring-Boot-Logback_4.png)
+![Spring-Boot-Logback_4.png](/upload/Spring-Boot-Logback/Spring-Boot-Logback_4.png)
 
 查看一下注释上的这个配置文件file-appender.xml的内容。
 
-![Spring-Boot-Logback_5.png](/upload/homePage/Spring-Boot-Logback/Spring-Boot-Logback_5.png)
+![Spring-Boot-Logback_5.png](/upload/Spring-Boot-Logback/Spring-Boot-Logback_5.png)
 
 调查到这里我们能够确定就是这个file-appender.xml，追加的spring.log文件内容。
 
