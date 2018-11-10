@@ -102,7 +102,7 @@ spring.log.7
 
 没办法，单纯从配置上并不能看出问题所在，我们只有查一下源码中打印该日志的位置，在IDE中搜索一下spring.log，结果如下:
 
-![Spring-Boot-Logback_1.png](/upload/homePage/Spring-Boot-Logback/Spring-Boot-Logback_1.png)
+![Spring-Boot-Logback_1.png](/upload/Spring-Boot-Logback/Spring-Boot-Logback_1.png)
 
 可以看到仅在base.xml和LogFile的toString方法中有spring.log。
 
