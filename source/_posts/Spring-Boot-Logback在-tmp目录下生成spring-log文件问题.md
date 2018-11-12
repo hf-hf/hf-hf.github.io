@@ -32,42 +32,42 @@ spring.log.7
 ```
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<include resource="org/springframework/boot/logging/logback/base.xml" />
-	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</root>
-	<!-- INFO级别日志 -->
-	<appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
-	    <file>/kindle-manager-logs/com/kindle/quartz/info.log</file>
-	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-	        <fileNamePattern>/kindle-manager-logs/com/kindle/quartz/info-%d{yyyy-MM-dd}.log</fileNamePattern>
-	    </rollingPolicy>  
-	    <encoder>  
-	        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>  
-	    </encoder>
-	    <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印Info日志 -->  
+    <include resource="org/springframework/boot/logging/logback/base.xml" />
+    <root level="INFO">
+    	<appender-ref ref="CONSOLE" />
+    </root>
+    <!-- INFO级别日志 -->
+    <appender name="infoAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>/kindle-manager-logs/com/kindle/quartz/info.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <fileNamePattern>/kindle-manager-logs/com/kindle/quartz/info-%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>  
+        <encoder>  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>  
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印Info日志 -->  
             <level>INFO</level>  
             <onMatch>ACCEPT</onMatch>  
             <onMismatch>DENY</onMismatch>  
         </filter>
-	</appender>
-	<!-- DEBUG级别日志 -->
-	<appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
-	    <file>/kindle-manager-logs/com/kindle/quartz/debug.log</file>
-	    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
-	        <fileNamePattern>/kindle-manager-logs/com/kindle/quartz/debug%d{yyyy-MM-dd}.log</fileNamePattern>
-	    </rollingPolicy>  
-	    <encoder>  
-	        <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>  
-	    </encoder>
-	    <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印debug日志 -->  
+    </appender>
+    <!-- DEBUG级别日志 -->
+    <appender name="debugAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+        <file>/kindle-manager-logs/com/kindle/quartz/debug.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
+            <fileNamePattern>/kindle-manager-logs/com/kindle/quartz/debug%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>  
+        <encoder>  
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{40} - %msg%n</pattern>  
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter"><!-- 只打印debug日志 -->  
             <level>DEBUG</level>  
             <onMatch>ACCEPT</onMatch>  
             <onMismatch>DENY</onMismatch>  
         </filter>
-	</appender>
-	<!-- ERROR级别日志 -->
-	<appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
+    </appender>
+    <!-- ERROR级别日志 -->
+    <appender name="errorAppender" class="ch.qos.logback.core.rolling.RollingFileAppender">  
         <file>/kindle-manager-logs/com/kindle/quartz/error.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">  
             <fileNamePattern>/kindle-manager-logs/com/kindle/quartz/error-%d{yyyy-MM-dd}.log</fileNamePattern>
@@ -82,19 +82,19 @@ spring.log.7
         </filter>
     </appender>
     <!-- JAVA程序日志 -->
-	<logger name="com.kindle" level="DEBUG" >
-		<appender-ref ref="infoAppender" />
-		<appender-ref ref="debugAppender" />
-		<appender-ref ref="errorAppender" />
-	</logger>
-	<!-- dev,test环境下日志 -->
-	<springProfile name="dev,test">
-		<logger name="com.kindle" level="DEBUG" />
-	</springProfile>
-	<!-- prod环境下日志 -->
-	<springProfile name="prod">
-		<logger name="com.kindle" level="INFO" />
-	</springProfile>
+    <logger name="com.kindle" level="DEBUG" >
+    	<appender-ref ref="infoAppender" />
+    	<appender-ref ref="debugAppender" />
+    	<appender-ref ref="errorAppender" />
+    </logger>
+    <!-- dev,test环境下日志 -->
+    <springProfile name="dev,test">
+    	<logger name="com.kindle" level="DEBUG" />
+    </springProfile>
+    <!-- prod环境下日志 -->
+    <springProfile name="prod">
+    	<logger name="com.kindle" level="INFO" />
+    </springProfile>
 </configuration>
 ```
 
@@ -133,13 +133,13 @@ base.xml是在logback-spring.xml第一行引用的，我们将其内容拷出，
 
 ```
 <configuration>
-	<!--<include resource="org/springframework/boot/logging/logback/base.xml" />-->
-	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
-	<include resource="org/springframework/boot/logging/logback/console-appender.xml" />
-	<root level="INFO">
-		<appender-ref ref="CONSOLE" />
-	</root>
-	...
+    <!--<include resource="org/springframework/boot/logging/logback/base.xml" />-->
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+    <root level="INFO">
+    	<appender-ref ref="CONSOLE" />
+    </root>
+    ...
 </configuration>	
 ```
 
