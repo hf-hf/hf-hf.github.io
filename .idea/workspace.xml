@@ -9,23 +9,6 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileEditorManager">
-    <leaf>
-      <file leaf-file-name="SpringBoot KafkaTemplate非阻塞异步发送问题.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/source/_posts/SpringBoot KafkaTemplate非阻塞异步发送问题.md">
-          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-            <state split_layout="SPLIT">
-              <first_editor relative-caret-position="297">
-                <caret line="11" column="0" lean-forward="false" selection-start-line="11" selection-start-column="0" selection-end-line="11" selection-end-column="0" />
-                <folding />
-              </first_editor>
-              <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-    </leaf>
-  </component>
   <component name="FindInProjectRecents">
     <findStrings>
       <find>使用命令打印程序open file</find>
@@ -87,9 +70,6 @@
   <component name="MavenRunner">
     <option name="jreName" value="1.8" />
     <option name="skipTests" value="true" />
-  </component>
-  <component name="NodeModulesDirectoryManager">
-    <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="185" />
@@ -322,12 +302,12 @@
       <workItem from="1528442397965" duration="2952000" />
       <workItem from="1529571482283" duration="3701000" />
       <workItem from="1530089875966" duration="800000" />
-      <workItem from="1547086822413" duration="42000" />
+      <workItem from="1547086822413" duration="618000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="29037000" />
+    <option name="totallyTimeSpent" value="29613000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
