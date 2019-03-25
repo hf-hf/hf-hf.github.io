@@ -88,7 +88,7 @@ scheme: Gemini
 # Value after `||` delimeter is the name of FontAwesome icon. If icon (with or without delimeter) is not specified, globe icon will be loaded.
 social:
   GitHub: https://github.com/hf-hf || github
-  Gitee: https://gitee.com/hf-hf || git
+  Gitee: https://gitee.com/hf-hf || gitee
   #E-Mail: mailto:yourname@gmail.com || envelope
   #Google: https://plus.google.com/yourname || google
   #Twitter: https://twitter.com/yourname || twitter
