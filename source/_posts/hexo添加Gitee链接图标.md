@@ -4,6 +4,8 @@ date: 2019-03-25 10:30:54
 tags:
     - hexo
     - gitee
+categories: 
+	- hexo
 ---
 ![homePage](/upload/homePage/20190325103507.jpg)
 <!--more-->
@@ -28,6 +30,10 @@ social:
     transform: translateY(20%);
 }
 ```
+
+并将下方图标添加到source/images/目录下，命名为gitee.png。
+
+![gitee](/images/gitee.png)
 
 重新部署发布hexo即可。
 
