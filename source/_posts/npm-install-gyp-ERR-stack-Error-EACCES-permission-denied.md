@@ -40,7 +40,7 @@ gyp ERR! stack Error: EACCES: permission denied, mkdir '/usr/local/lib/node_modu
 
 ```
 If npm detects it is running as root it drops to a non-privileged user which then doesn't have permissions to write to /root/.node-gyp. The --unsafe-perm option stops it from changing user.
-# 如果npm检测到它运行在root用户下，那么它将会降级到一个非特权用户（non-privileged user），这个用户没有写入/root/.node-gyp的权限，--unsafe-perm参数会组织它切换用户。
+# 如果npm检测到它运行在root用户下，那么它将会降级到一个非特权用户（non-privileged user），这个用户没有写入/root/.node-gyp的权限，--unsafe-perm参数会阻止它切换用户。
 
 nvm doesn't have this problem when not using sudo because it stores everything under the current users' home directory.
 # nvm在不使用sudo时不会有这个问题，因为它将所有内容存储在当前用户的home目录。
