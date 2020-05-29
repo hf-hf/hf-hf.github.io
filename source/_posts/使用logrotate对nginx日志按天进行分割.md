@@ -23,6 +23,8 @@ df -m
 
 ``` bash
 du -h --max-depth=1
+# 也可以添加排序规则，其中-h是以human-formatted格式显示，r是反转把空间占用较大的排在前面
+du -h --max-depth=1 | sort -hr
 ```
 
 噼里啪啦一阵之后发现nginx下的access.log居然有13G，这还能忍？赶紧压缩移到别的地方~

@@ -253,7 +253,7 @@ font:
   enable: true
 
   # Uri of fonts host. E.g. //fonts.googleapis.com (Default)
-  host: //fonts.lug.ustc.edu.cn
+  host: //fonts.googleapis.com
 
   # Global font settings used on <body> element.
   global:
@@ -642,7 +642,7 @@ vendors:
 
   # Internal version: 4.6.2
   # See: http://fontawesome.io/
-  fontawesome: //cdn.bootcdn.net/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css
+  fontawesome: //maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css
 
   # Internal version: 1
   # https://www.algolia.com
