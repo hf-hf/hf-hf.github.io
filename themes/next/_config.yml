@@ -23,7 +23,7 @@ authoricon: heart
 copyright: false
 
 # Footer `powered-by` and `theme-info` coding-copyright
-codingcopyright: true
+codingcopyright: false
 
 # ---------------------------------------------------------------
 # SEO Settings
