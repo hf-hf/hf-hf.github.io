@@ -11,14 +11,14 @@ categories:
 <!--more-->
 
 ## 主题配置
-修改themes\next\_config.yml，添加如下数据：
+修改themes\next\\_config.yml，添加如下数据：
 ```
 social:
     Gitee: https://gitee.com/hf-hf || gitee
 ```
 
 ## 自定义图标配置
-因hexo所使用的图标库Font Awesome中没有gitee的图标，因此我们需要手动添加CSS，修改自定义样式文件themes\next\source\css\_custom\custom.styl，添加如下数据：
+因hexo所使用的图标库Font Awesome中没有gitee的图标，因此我们需要手动添加CSS，修改自定义样式文件themes\next\source\css\\_custom\custom.styl，添加如下数据：
 ```
 .fa-gitee{
     background-image: url(/images/gitee.png);
@@ -39,3 +39,5 @@ social:
 
 ## 最终效果
 ![gitee_icon_1](/upload/giteeIcon/gitee_icon_1.png)
+
+你也可以以这种形式添加自己的网站图标^^。
