@@ -80,7 +80,7 @@ Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to
 
 ![unable-to-find-valid-certification-path-to-requested-target_4](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_4.png)
 
-能够看到在受信任的根证书颁发机构下存在DST Root CA X3，在中间证书颁发机构下存在Let's Encrypt Authority X3，且都是有效的证书没有过期，那么回到我们的问题，现在可以得出结论了关于报错提示站点证书的问题，就是因为我们本地缺少网站证书www.ershicimi.com。
+能够看到在受信任的根证书颁发机构下存在DST Root CA X3，在中级证书颁发机构下存在Let's Encrypt Authority X3，且都是有效的证书没有过期，那么回到我们的问题，现在可以得出结论了关于报错提示站点证书的问题，就是因为我们本地缺少网站证书www.ershicimi.com。
 
 这里所谓的本地，即我们的代码运行的环境，如我这里使用的是Java，那么对应的就是jdk中的证书库缺少该网站证书。
 
