@@ -29,7 +29,7 @@ javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: 
 	at sun.net.www.protocol.https.HttpsClient.afterConnect(HttpsClient.java:559)
 	at sun.net.www.protocol.https.AbstractDelegateHttpsURLConnection.connect(AbstractDelegateHttpsURLConnection.java:185)
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.connect(HttpsURLConnectionImpl.java:153)
-	
+	...
 Caused by: sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target
 	at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:387)
 	at sun.security.validator.PKIXValidator.engineValidate(PKIXValidator.java:292)
@@ -52,28 +52,28 @@ Caused by: sun.security.provider.certpath.SunCertPathBuilderException: unable to
 
 那么具体是什么问题导致出现该错误的呢，这里我们首先要说明一个概念：证书链。
 
-- <b>什么是证书链？</b>
-  浏览器是怎么保证访问的网站是正经的官方网站而不是其他的钓鱼网站呢，Chrome浏览器访问网站时，可信任的网站地址旁边会有一个绿色的锁标志，表明该网站是可信任的，它是怎么知道该网站是可信任的呢。
-  因为浏览器会内置一些证书，其他证书都是由这些证书签发的，通过内置的证书来验证其他证书的有效性。这些浏览器内置的证书叫做Root CA(根CA证书)，其他网站的证书都是由Root CA证书一层一层往下签发的。
+> ### 什么是证书链？
+> 浏览器是怎么保证访问的网站是正经的官方网站而不是其他的钓鱼网站呢，Chrome浏览器访问网站时，可信任的网站地址旁边会有一个绿色的锁标志，表明该网站是可信任的，它是怎么知道该网站是可信任的呢。
+> 因为浏览器会内置一些证书，其他证书都是由这些证书签发的，通过内置的证书来验证其他证书的有效性。这些浏览器内置的证书叫做Root CA(根CA证书)，其他网站的证书都是由Root CA证书一层一层往下签发的。
 
 我们可以点击Chrome浏览器网站地址旁边的锁标志，选择证书点击证书路径查看网站的证书链，如下图：
 ![unable-to-find-valid-certification-path-to-requested-target_1](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_1.png)
 
-从上到下依次是根证书、中级证书、网站证书，中级证书可能会有多级；根证书是终端设备预装信任的，所以是不需要配置的；以Windows系统为例，Google的Chrome浏览器使用的是操作系统预装的证书库，我们在Windows运行中输入certmgr.msc即可打开证书管理器，见下图。
+从上到下依次是根证书、中级证书、网站证书，中级证书可能会有多级。根证书是终端设备预装信任的，所以是不需要配置的。以Windows系统为例，Google的Chrome浏览器使用的是操作系统预装的证书库，我们在Windows运行中输入certmgr.msc即可打开证书管理器，见下图。
 ![unable-to-find-valid-certification-path-to-requested-target_2](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_2.png)
 
 我们现在知道根证书是设备级信任的，那么中级证书有什么作用呢？
 
-- <b>什么是中级证书？</b>
-  中级证书相当于是我们的根证书的替身。我们之所以使用中级证书，是因为我们必须在根证书上建立许多安全层，从而确保根证书的密钥绝对不会被任何人访问。
-  不过，由于根证书自身签署了中级证书，因此中级证书就可以用于签署我们的客户安装的SSL 并维持“信任链”。
+> ### 什么是中级证书？
+> 中级证书相当于是我们的根证书的替身。我们之所以使用中级证书，是因为我们必须在根证书上建立许多安全层，从而确保根证书的密钥绝对不会被任何人访问。
+> 不过，由于根证书自身签署了中级证书，因此中级证书就可以用于签署我们的客户安装的SSL 并维持“信任链”。
 
 中级证书是保证根证书安全性的，我们的网站向中级证书颁发者申请的证书，也就是证书路径最下级的网站证书。如果我们的网站证书一旦过期，在通过Https访问网站时浏览器立马会检测到并进行阻断，提示“这不是私密链接”等风险提示。
 
-- 证书认证原理
-  服务器首先生成一个密钥对，把公钥提交给CA
-  CA用自己的私钥对服务器提供的公钥进行签名得到证书
-  Https服务器在与客户端进行连接的时候会将证书和公钥一起发给客户端，客户端用CA的公钥对证书进行验证，对比一致则证明该证书确实是CA发布的。
+> ### 证书认证原理
+> 服务器首先生成一个密钥对，把公钥提交给CA
+> CA用自己的私钥对服务器提供的公钥进行签名得到证书
+> Https服务器在与客户端进行连接的时候会将证书和公钥一起发给客户端，客户端用CA的公钥对证书进行验证，对比一致则证明该证书确实是CA发布的。
   
 关于证书的认证原理见上方说明，我们现在知道了证书的信任链，那么现在试着在证书管理器中找一下图1中的根证书颁发者DST Root CA X3和中间证书颁发者Let's Encrypt Authority X3，见下图3、4：
 ![unable-to-find-valid-certification-path-to-requested-target_3](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_3.png)
@@ -117,7 +117,7 @@ private static void trustAllHttpsCertificates() throws Exception {
 
 ![unable-to-find-valid-certification-path-to-requested-target_6](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_6.png)
 
-进入证书导出向导，下一步后选择导出格式：Base64编码，命名为：ershicimi.cer保存到本地。
+进入证书导出向导，下一步后选择导出格式Base64编码，命名为ershicimi.cer保存到本地。
 
 ![unable-to-find-valid-certification-path-to-requested-target_7](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_7.png)
 
@@ -140,10 +140,9 @@ keytool -import -file ershicimi.cer -keystore "D:\Java\jdk1.8.0_60\jre\lib\secur
 
 至此缺失的网站证书已导入到JDK下的JRE证书库cacerts中，如果遇到报错java.io.FileNotFoundException: ershicimi.cer，请确认-file后需要指定要导入证书的路径。
 
-![unable-to-find-valid-certification-path-to-requested-target_9](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_9.png)
-
 此时再运行程序，请求Https地址无报错，返回正常。
 
+![unable-to-find-valid-certification-path-to-requested-target_9](/upload/ssl/unable-to-find-valid-certification-path-to-requested-target_9.png)
 
 ### keytool指令扩展
 如果你不小心导入错误了想要删除之前导入的证书，或者想要查看新导入的证书，你可以执行以下的命令：
