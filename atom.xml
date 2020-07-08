@@ -1,0 +1,580 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>混饭&#39;s Notes</title>
+  <icon>http://hunfan.top/icon.png</icon>
+  <subtitle>Quick notes</subtitle>
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://hunfan.top/"/>
+  <updated>2020-07-08T02:13:03.566Z</updated>
+  <id>http://hunfan.top/</id>
+  
+  <author>
+    <name>混饭</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>解决爬取Https页面报unable to find valid certification path to requested target的问题</title>
+    <link href="http://hunfan.top/posts/98e85ae5/"/>
+    <id>http://hunfan.top/posts/98e85ae5/</id>
+    <published>2020-06-28T02:53:51.000Z</published>
+    <updated>2020-07-08T02:13:03.566Z</updated>
+    
+    <summary type="html">
+    
+      最近调试爬虫程序，对ershcimi进行爬取时报错，堆栈信息如下：
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="https" scheme="http://hunfan.top/tags/https/"/>
+    
+      <category term="证书" scheme="http://hunfan.top/tags/%E8%AF%81%E4%B9%A6/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mysql关于blob数据类型使用mysqldump导出乱码问题解决</title>
+    <link href="http://hunfan.top/posts/c15a9847/"/>
+    <id>http://hunfan.top/posts/c15a9847/</id>
+    <published>2020-06-11T01:17:10.000Z</published>
+    <updated>2020-07-08T02:13:03.210Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;最近查看服务器上的Mysql自动备份，发现关于blob数据类型使用mysqldump导出有乱码的情况，命令如下：&lt;/p&gt;
+&lt;figure
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Mysql" scheme="http://hunfan.top/tags/Mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>npm install gyp ERR! stack Error: EACCES: permission denied</title>
+    <link href="http://hunfan.top/posts/ca6b9310/"/>
+    <id>http://hunfan.top/posts/ca6b9310/</id>
+    <published>2020-05-22T07:41:04.000Z</published>
+    <updated>2020-07-08T02:13:03.446Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;之前部署Nuxt.js项目，新添加依赖后在服务器编译报错：&lt;/p&gt;
+&lt;figure class=&quot;highlight
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="nodejs" scheme="http://hunfan.top/tags/nodejs/"/>
+    
+      <category term="npm" scheme="http://hunfan.top/tags/npm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Centos7下安装node</title>
+    <link href="http://hunfan.top/posts/b75009fc/"/>
+    <id>http://hunfan.top/posts/b75009fc/</id>
+    <published>2020-05-22T07:14:53.000Z</published>
+    <updated>2020-07-08T02:13:03.041Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;下载node-js安装包并解压&quot;&gt;&lt;a href=&quot;#下载node-js安装包并解压&quot; class=&quot;headerlink&quot; title=&quot;下载node.js安装包并解压&quot;&gt;&lt;/a&gt;下载node.js安装包并解压&lt;/h2&gt;&lt;figure
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="linux" scheme="http://hunfan.top/tags/linux/"/>
+    
+      <category term="nodejs" scheme="http://hunfan.top/tags/nodejs/"/>
+    
+      <category term="npm" scheme="http://hunfan.top/tags/npm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>微信分享“咱们从头到尾说一次 Java 垃圾回收”</title>
+    <link href="http://hunfan.top/posts/9b4a5eec/"/>
+    <id>http://hunfan.top/posts/9b4a5eec/</id>
+    <published>2019-07-26T01:46:39.000Z</published>
+    <updated>2020-07-08T02:13:03.527Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;blockquote&gt;
+&lt;p&gt;名词解释：&lt;br&gt;GC：垃圾收集器&lt;br&gt;Minor GC：新生代GC，指发生在新生代的垃圾收集动作，所有的Minor GC都会触发全世界的暂停（stop-the-world），停止应用程序的线程，不过这个过程非常短暂。&lt;br&gt;Major
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="jvm" scheme="http://hunfan.top/tags/jvm/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Docker挂载宿主目录，容器内对其操作提示Permission denied</title>
+    <link href="http://hunfan.top/posts/8b05b30d/"/>
+    <id>http://hunfan.top/posts/8b05b30d/</id>
+    <published>2019-05-14T08:09:14.000Z</published>
+    <updated>2020-07-08T02:13:03.002Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;Docker挂载宿主主机目录，docker run后容器启动正常，但是挂载目录中不存在容器内生成的文件，&lt;code&gt;journalctl
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="docker" scheme="http://hunfan.top/tags/docker/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Java获取ClassLoader的方式</title>
+    <link href="http://hunfan.top/posts/2038a319/"/>
+    <id>http://hunfan.top/posts/2038a319/</id>
+    <published>2019-04-12T08:25:33.000Z</published>
+    <updated>2020-07-08T02:13:03.031Z</updated>
+    
+    <summary type="html">
+    
+      有东西被加密了, 请输入密码查看.
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Java" scheme="http://hunfan.top/tags/Java/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>MQTT Eclipse paho订阅和发布</title>
+    <link href="http://hunfan.top/posts/8f34f883/"/>
+    <id>http://hunfan.top/posts/8f34f883/</id>
+    <published>2019-03-26T01:14:46.000Z</published>
+    <updated>2020-07-08T02:13:03.149Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;MQTT(Message Queuing Telemetry
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="mqtt" scheme="http://hunfan.top/tags/mqtt/"/>
+    
+      <category term="eclipse paho" scheme="http://hunfan.top/tags/eclipse-paho/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>hexo添加Gitee链接图标</title>
+    <link href="http://hunfan.top/posts/59ee5686/"/>
+    <id>http://hunfan.top/posts/59ee5686/</id>
+    <published>2019-03-25T02:30:54.000Z</published>
+    <updated>2020-07-08T02:13:03.406Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;主题配置&quot;&gt;&lt;a href=&quot;#主题配置&quot; class=&quot;headerlink&quot; title=&quot;主题配置&quot;&gt;&lt;/a&gt;主题配置&lt;/h2&gt;&lt;p&gt;修改themes\next\_config.yml，添加如下数据：&lt;/p&gt;
+&lt;figure
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="hexo" scheme="http://hunfan.top/tags/hexo/"/>
+    
+      <category term="gitee" scheme="http://hunfan.top/tags/gitee/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>SpringBoot KafkaTemplate应用</title>
+    <link href="http://hunfan.top/posts/d70bf043/"/>
+    <id>http://hunfan.top/posts/d70bf043/</id>
+    <published>2019-01-04T07:32:57.000Z</published>
+    <updated>2020-07-08T02:13:03.336Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;简介&quot;&gt;&lt;a href=&quot;#简介&quot; class=&quot;headerlink&quot; title=&quot;简介&quot;&gt;&lt;/a&gt;简介&lt;/h2&gt;&lt;p&gt;Apache
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Spring Boot" scheme="http://hunfan.top/tags/Spring-Boot/"/>
+    
+      <category term="kafka" scheme="http://hunfan.top/tags/kafka/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring Boot HttpMessageConvert使用fastjson替换jackson导致Feign调用异常问题解决</title>
+    <link href="http://hunfan.top/posts/613bac33/"/>
+    <id>http://hunfan.top/posts/613bac33/</id>
+    <published>2019-01-04T06:43:49.000Z</published>
+    <updated>2020-07-08T02:13:03.293Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Spring Boot" scheme="http://hunfan.top/tags/Spring-Boot/"/>
+    
+      <category term="fastjson" scheme="http://hunfan.top/tags/fastjson/"/>
+    
+      <category term="Feign" scheme="http://hunfan.top/tags/Feign/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>分享Idea Maven Helper插件，快捷解决依赖冲突问题</title>
+    <link href="http://hunfan.top/posts/6f949d69/"/>
+    <id>http://hunfan.top/posts/6f949d69/</id>
+    <published>2019-01-04T03:14:45.000Z</published>
+    <updated>2020-07-08T02:13:03.507Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;在修改一些旧Maven项目时，我们引入新的依赖，有时候会提示冲突，Maven
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Idea" scheme="http://hunfan.top/tags/Idea/"/>
+    
+      <category term="Maven" scheme="http://hunfan.top/tags/Maven/"/>
+    
+      <category term="Maven Helper" scheme="http://hunfan.top/tags/Maven-Helper/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Idea配置Terminal为Git终端，解决中文乱码问题</title>
+    <link href="http://hunfan.top/posts/f1df3c29/"/>
+    <id>http://hunfan.top/posts/f1df3c29/</id>
+    <published>2019-01-04T03:12:17.000Z</published>
+    <updated>2020-07-08T02:13:03.021Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;p&gt;在Idea中，Ctrl + Alt + S或者选择File -&amp;gt; Settings -&amp;gt; Tools -&amp;gt; Terminal，配置Shell Path为Git安装目录\bin\bash.exe即可。&lt;/p&gt;
+&lt;p&gt;&lt;img src=
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="idea" scheme="http://hunfan.top/tags/idea/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mybatis批量insert返回自增主键问题</title>
+    <link href="http://hunfan.top/posts/28fdf399/"/>
+    <id>http://hunfan.top/posts/28fdf399/</id>
+    <published>2019-01-04T03:11:23.000Z</published>
+    <updated>2020-07-08T02:13:03.161Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;背景&quot;&gt;&lt;a href=&quot;#背景&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="mybatis" scheme="http://hunfan.top/tags/mybatis/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Mysql关于INSERT INTO...ON DUPLICATE KEY UPDATE问题分析</title>
+    <link href="http://hunfan.top/posts/f712a5dd/"/>
+    <id>http://hunfan.top/posts/f712a5dd/</id>
+    <published>2019-01-04T01:41:39.000Z</published>
+    <updated>2020-07-08T02:13:03.202Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Mysql" scheme="http://hunfan.top/tags/Mysql/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>阿里云域名配置免费证书Let&#39;s Encrypt(certbot)问题</title>
+    <link href="http://hunfan.top/posts/cbdb9b90/"/>
+    <id>http://hunfan.top/posts/cbdb9b90/</id>
+    <published>2018-11-16T06:55:31.000Z</published>
+    <updated>2020-07-08T02:13:03.580Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;今天使用阿里云域名通过Let’s Encrypt(certbot)申请ssl证书，参照&lt;a
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="linux" scheme="http://hunfan.top/tags/linux/"/>
+    
+      <category term="cerbot" scheme="http://hunfan.top/tags/cerbot/"/>
+    
+      <category term="阿里云" scheme="http://hunfan.top/tags/%E9%98%BF%E9%87%8C%E4%BA%91/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Nginx编译安装添加http_ssl_module模块</title>
+    <link href="http://hunfan.top/posts/2192ed56/"/>
+    <id>http://hunfan.top/posts/2192ed56/</id>
+    <published>2018-11-16T06:12:20.000Z</published>
+    <updated>2020-07-08T02:13:03.256Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;今天给服务器nginx开启ssl时，发现配置文件添加ssl后提示如下信息：&lt;/p&gt;
+&lt;figure class=&quot;highlight
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="nginx" scheme="http://hunfan.top/tags/nginx/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Linux Crontab定时任务生成文件为空，手动执行脚本正常问题</title>
+    <link href="http://hunfan.top/posts/b1908098/"/>
+    <id>http://hunfan.top/posts/b1908098/</id>
+    <published>2018-11-16T03:50:30.000Z</published>
+    <updated>2020-07-08T02:13:03.067Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="linux" scheme="http://hunfan.top/tags/linux/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Spring Boot Logback在/tmp目录下生成spring.log文件问题</title>
+    <link href="http://hunfan.top/posts/151301e1/"/>
+    <id>http://hunfan.top/posts/151301e1/</id>
+    <published>2018-11-10T13:13:47.000Z</published>
+    <updated>2020-07-08T02:13:03.301Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="Spring Boot" scheme="http://hunfan.top/tags/Spring-Boot/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Nginx配置忽略找不到favicon.ico文件的错误日志</title>
+    <link href="http://hunfan.top/posts/d76d92/"/>
+    <id>http://hunfan.top/posts/d76d92/</id>
+    <published>2018-11-08T05:52:03.000Z</published>
+    <updated>2020-07-08T02:13:03.252Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;h2 id=&quot;情景&quot;&gt;&lt;a href=&quot;#情景&quot; class=&quot;headerlink&quot; title=&quot;情景&quot;&gt;&lt;/a&gt;情景&lt;/h2&gt;&lt;p&gt;今天排查某服务请求问题，发现nginx error日志中重复输出了很多如下信息：&lt;/p&gt;
+&lt;figure class=&quot;highlight
+        
+      
+    
+    </summary>
+    
+    
+      <category term="uncategorized" scheme="http://hunfan.top/categories/uncategorized/"/>
+    
+    
+      <category term="nginx" scheme="http://hunfan.top/tags/nginx/"/>
+    
+  </entry>
+  
+</feed>

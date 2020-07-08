@@ -1,0 +1,157 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MQTT Eclipse paho订阅和发布 | 混饭's Notes</title><meta name="description" content="简介MQTT(Message Queuing Telemetry Transport，是一种基于发布&#x2F;订阅（publish&#x2F;subscribe）模式的”轻量级”通讯协议，该协议构建于TCP&#x2F;IP协议上，由IBM在1999年发布。MQTT最大优点在于，可以以极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务。作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有"><meta name="keywords" content="mqtt,eclipse paho"><meta name="author" content="混饭"><meta name="copyright" content="混饭"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/images/avatar.png"><link rel="canonical" href="http://hunfan.top/posts/8f34f883/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta property="og:type" content="article"><meta property="og:title" content="MQTT Eclipse paho订阅和发布"><meta property="og:url" content="http://hunfan.top/posts/8f34f883/"><meta property="og:site_name" content="混饭's Notes"><meta property="og:description" content="简介MQTT(Message Queuing Telemetry Transport，是一种基于发布&#x2F;订阅（publish&#x2F;subscribe）模式的”轻量级”通讯协议，该协议构建于TCP&#x2F;IP协议上，由IBM在1999年发布。MQTT最大优点在于，可以以极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务。作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有"><meta property="og:image" content="http://hunfan.top/upload/homePage/20190326091707.jpg"><meta property="article:published_time" content="2019-03-26T01:14:46.000Z"><meta property="article:modified_time" content="2020-07-08T02:13:03.149Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="prev" title="Java获取ClassLoader的方式" href="http://hunfan.top/posts/2038a319/"><link rel="next" title="hexo添加Gitee链接图标" href="http://hunfan.top/posts/59ee5686/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?6cd8ae14adb2fe3dc7047ddfa0d40d73";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"77ZW8HG1F0","apiKey":"924aaf9b16831d3af864330abb1b94cf","indexName":"github","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"top-center"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="混饭's Notes" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/images/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">58</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#简介"><span class="toc-number">1.</span> <span class="toc-text">简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Broker配置"><span class="toc-number">2.</span> <span class="toc-text">Broker配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Maven依赖"><span class="toc-number">3.</span> <span class="toc-text">Maven依赖</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MQTT通配符说明"><span class="toc-number">4.</span> <span class="toc-text">MQTT通配符说明</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#订阅发布代码"><span class="toc-number">5.</span> <span class="toc-text">订阅发布代码</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#注意事项"><span class="toc-number">6.</span> <span class="toc-text">注意事项</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/upload/homePage/20190326091707.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">混饭's Notes</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">MQTT Eclipse paho订阅和发布</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2019-03-26 09:14:46"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2019-03-26</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-08 10:13:03"><i class="fas fa-history fa-fw"></i> 更新于 2020-07-08</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/uncategorized/">uncategorized</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>MQTT(Message Queuing Telemetry Transport，是一种基于发布/订阅（publish/subscribe）模式的”轻量级”通讯协议，该协议构建于TCP/IP协议上，由IBM在1999年发布。MQTT最大优点在于，可以以极少的代码和有限的带宽，为连接远程设备提供实时可靠的消息服务。作为一种低开销、低带宽占用的即时通讯协议，使其在物联网、小型设备、移动应用等方面有较广泛的应用。</p>
+<h2 id="Broker配置"><a href="#Broker配置" class="headerlink" title="Broker配置"></a>Broker配置</h2><p>MQTT工作在TCP/IP协议族上，是为硬件性能低下的远程设备以及网络状况糟糕的情况下而设计的发布/订阅型消息协议，为此，它需要一个消息中间件。本文使用的消息中间件为Apache Apollo，详细安装教程见官网<a href="http://activemq.apache.org/apollo/documentation/getting-started.html" target="_blank" rel="noopener">apollo getting-started</a>。</p>
+<p><img src= "/img/loading.gif" data-src="/upload/mqttBroker/mqtt_broker_1.png" alt="Apache Apollo Console"></p>
+<h2 id="Maven依赖"><a href="#Maven依赖" class="headerlink" title="Maven依赖"></a>Maven依赖</h2><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">    &lt;groupId&gt;org.eclipse.paho&lt;&#x2F;groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;org.eclipse.paho.client.mqttv3&lt;&#x2F;artifactId&gt;</span><br><span class="line">    &lt;version&gt;1.2.0&lt;&#x2F;version&gt;</span><br><span class="line">&lt;&#x2F;dependency&gt;</span><br></pre></td></tr></table></figure>
+
+<p>Eclipse paho选用版本1.2.0，最后更新时间为2017年8月，截止本文撰写日，Eclipse paho已更新至1.2.1，相关更新详情见<a href="https://github.com/eclipse/paho.mqtt.java" target="_blank" rel="noopener">Github paho.mqtt.java</a>。</p>
+<h2 id="MQTT通配符说明"><a href="#MQTT通配符说明" class="headerlink" title="MQTT通配符说明"></a>MQTT通配符说明</h2><p>/用于分割主题层级，称为主题层级分隔符;#为多层通配符，可以匹配于多层主题；+为单层通配符只能匹配一层主题。</p>
+<p>例如：订阅topic为<code>RFID/SS/#</code>，设备123456初始化指令发布topic为<code>RFID/SS/123456/INIT</code>。</p>
+<p>PS: 单层通配符和多层通配符只能用于订阅消息而不能用于发布消息，层级分隔符两种情况下均可使用。</p>
+<h2 id="订阅发布代码"><a href="#订阅发布代码" class="headerlink" title="订阅发布代码"></a>订阅发布代码</h2><p>MQTT工具类：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * mqtt client</span><br><span class="line"> * @author hefan</span><br><span class="line"> * @date 2019&#x2F;3&#x2F;8 11:15</span><br><span class="line"> *&#x2F;</span><br><span class="line">@Slf4j</span><br><span class="line">@Component</span><br><span class="line">public class MqttUtils &#123;</span><br><span class="line"></span><br><span class="line">    private static boolean startReconnect &#x3D; false;</span><br><span class="line"></span><br><span class="line">    private static MqttClient client;</span><br><span class="line"></span><br><span class="line">    private static MqttConfig config;</span><br><span class="line"></span><br><span class="line">    private static ScheduledExecutorService scheduler;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    public void setConfig(MqttConfig config) &#123;</span><br><span class="line">        MqttUtils.config &#x3D; config;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    private static Sender sender;</span><br><span class="line"></span><br><span class="line">    @Autowired</span><br><span class="line">    public void setSender(Sender sender) &#123;</span><br><span class="line">        MqttUtils.sender &#x3D; sender;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 生成配置对象，用户名，密码等</span><br><span class="line">     * @return</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static MqttConnectOptions getOptions() &#123;</span><br><span class="line">        MqttConnectOptions options &#x3D; new MqttConnectOptions();</span><br><span class="line">        options.setCleanSession(config.getCleanSession());</span><br><span class="line">        options.setUserName(config.getUsername());</span><br><span class="line">        options.setPassword(config.getPassword().toCharArray());</span><br><span class="line">        &#x2F;&#x2F;options.setConnectionTimeout(config.getConnectionTimeout());</span><br><span class="line">        options.setKeepAliveInterval(config.getKeepAliveInterval());</span><br><span class="line">        return options;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 连接</span><br><span class="line">     * @throws MqttException</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void connect() throws MqttException &#123;</span><br><span class="line">        &#x2F;&#x2F; 防止重复创建MQTTClient实例</span><br><span class="line">        if (null &#x3D;&#x3D; client) &#123;</span><br><span class="line">            client &#x3D; new MqttClient(config.getHost(), config.getId(),</span><br><span class="line">                    new MemoryPersistence());</span><br><span class="line">            client.setCallback(new ReceiveCallback(config.getId(), sender));</span><br><span class="line">        &#125;</span><br><span class="line">        MqttConnectOptions options &#x3D; getOptions();</span><br><span class="line">        &#x2F;&#x2F; 遗嘱消息设置</span><br><span class="line">        &#x2F;&#x2F;options &#x3D; setWill(options);</span><br><span class="line">        if (!client.isConnected()) &#123;</span><br><span class="line">            client.connect(options);</span><br><span class="line">            log.debug(&quot;first connect success!&quot;);</span><br><span class="line">            &#x2F;&#x2F;client.subscribe(config.getTopic(), config.getQos());</span><br><span class="line">        &#125; else &#123;</span><br><span class="line">            &#x2F;&#x2F; 这里的逻辑是如果连接成功就重新连接</span><br><span class="line">            client.reconnect();</span><br><span class="line">            log.debug(&quot;reconnect success!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public static MqttConnectOptions setWill(MqttConnectOptions options)&#123;</span><br><span class="line">        MqttTopic topic &#x3D; client.getTopic(config.getWillTopic());</span><br><span class="line">        options.setWill(topic, (config.getId()).getBytes(), 0, false);</span><br><span class="line">        return options;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 开启重新连接</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void startReconnect() &#123;</span><br><span class="line">        if(startReconnect)&#123;</span><br><span class="line">            log.error(&quot;reconnect scheduler is running!&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        scheduler &#x3D; new ScheduledThreadPoolExecutor(1);</span><br><span class="line">        scheduler.scheduleAtFixedRate(() -&gt; &#123;</span><br><span class="line">            if (!client.isConnected()) &#123;</span><br><span class="line">                try &#123;</span><br><span class="line">                    connect();</span><br><span class="line">                &#125; catch (MqttException e) &#123;</span><br><span class="line">                    log.error(&quot;reconnect error！&quot;, e);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;, 0, 5, TimeUnit.SECONDS);</span><br><span class="line">        startReconnect &#x3D; true;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 关闭重新连接</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void closeReconnect() &#123;</span><br><span class="line">        if(!startReconnect)&#123;</span><br><span class="line">            log.debug(&quot;reconnect scheduler not started!&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        scheduler.shutdown();</span><br><span class="line">        startReconnect &#x3D; false;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发布消息</span><br><span class="line">     * @param topic</span><br><span class="line">     * @param message</span><br><span class="line">     * @throws MqttException</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void publish(String topic, MqttMessage message) throws MqttException &#123;</span><br><span class="line">        if(null &#x3D;&#x3D; client || !client.isConnected())&#123;</span><br><span class="line">            log.error(&quot;mqtt client disconnect!&quot;);</span><br><span class="line">            return;</span><br><span class="line">        &#125;</span><br><span class="line">        MqttTopic mqttTopic &#x3D; client.getTopic(topic);</span><br><span class="line">        MqttDeliveryToken token &#x3D; mqttTopic.publish(message);</span><br><span class="line">        token.waitForCompletion();</span><br><span class="line">        log.debug(&quot;publish result:&quot; + token.isComplete());</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    &#x2F;**</span><br><span class="line">     * 发布消息</span><br><span class="line">     * @param topic</span><br><span class="line">     * @param payload</span><br><span class="line">     * @throws MqttException</span><br><span class="line">     *&#x2F;</span><br><span class="line">    public static void publish(String topic, byte[] payload) throws MqttException &#123;</span><br><span class="line">        MqttMessage message &#x3D; new MqttMessage();</span><br><span class="line">        &#x2F;&#x2F;在Qos2情况下，Broker肯定会收到消息，且只收到一次</span><br><span class="line">        message.setQos(config.getQos());</span><br><span class="line">        message.setRetained(config.getRetained());</span><br><span class="line">        message.setPayload(payload);</span><br><span class="line">        publish(topic, message);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>开启连接并启动断线重连。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">&#x2F;**</span><br><span class="line"> * mqtt client引导</span><br><span class="line"> * @author hefan</span><br><span class="line"> * @date 2019&#x2F;3&#x2F;8 14:03</span><br><span class="line"> *&#x2F;</span><br><span class="line">@Slf4j</span><br><span class="line">@Component</span><br><span class="line">public class MqttBootStrap implements CommandLineRunner &#123;</span><br><span class="line"></span><br><span class="line">    @Override</span><br><span class="line">    public void run(String... args) throws Exception &#123;</span><br><span class="line">        MqttUtils.connect();</span><br><span class="line">        MqttUtils.startReconnect();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>发布消息。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">MqttUtils.publish(&quot;topic&quot;, StrUtil.hexStringToBytes(&quot;cmd&quot;));</span><br></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li>发布消息时，如无特殊需要，请不要将消息格式设置为保留，否则当连接断开重新连接时，会收到的重复的消息。保留消息主要应用：发布方定时发布retain消息向订阅方通知自身状态，订阅方获取该消息推测发布方状态，当订阅方断线重连后仍能接收到最新的发布方状态。</li>
+<li>若要配置遗嘱消息，需放开setWill(options)行的注释，并设置单独的topic接收client离线消息。</li>
+<li>客户端重新连接时，请设置cleanSession为false，否则会导致离线期间发送的消息，重连后无法接收。</li>
+<li>当程序订阅一次后，不清除Session无需再次订阅，若断线重连后再次订阅，会接收不到部分消息。MqttUtils中client.subscribe(config.getTopic(), config.getQos())仅第一次上线时需放开。</li>
+</ul>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">混饭</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hunfan.top/posts/8f34f883/">http://hunfan.top/posts/8f34f883/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hunfan.top" target="_blank">混饭's Notes</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/mqtt/">mqtt</a><a class="post-meta__tags" href="/tags/eclipse-paho/">eclipse paho</a></div><div class="post_share"><div class="social-share" data-image="/upload/homePage/20200628154000.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/2038a319/"><img class="prev-cover" data-src="/upload/homePage/20190412091707.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Java获取ClassLoader的方式</div></div></a></div><div class="next-post pull-right"><a href="/posts/59ee5686/"><img class="next-cover" data-src="/upload/homePage/20190325103507.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">hexo添加Gitee链接图标</div></div></a></div></nav><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'FbdjjSByqhjHC2t0f5DiTzXi-gzGzoHsz',
+  appKey: 'EhyT8E3CKzF9CQcem5hx7ftx',
+  placeholder: '记得留下你的昵称和邮箱...可以快速收到回复',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'en',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: false,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2017 - 2020 By 混饭</div><div class="icp"><a href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"/><span>鲁ICP备19006622号-1 版权所有</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script defer id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/algolia.js"></script></body></html>

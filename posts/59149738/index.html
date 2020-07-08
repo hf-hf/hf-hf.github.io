@@ -1,0 +1,170 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Linux too many open files问题调查 | 混饭's Notes</title><meta name="description" content="问题今天发现某netty服务总是报too many open files，因为是新上的服务，设备量并不多，不应该啊，T.T 原因调查一下发生原因：too many open files，字面意思上看就是打开了过多的文件，不过在linux下files并不只是文件的意思，像socket(Tcp、Udp)连接，开启监听的端口这些都属于file，所以有时候也可以叫做句柄(handle)，这个错误也可以描述"><meta name="keywords" content="linux,too many open files"><meta name="author" content="混饭"><meta name="copyright" content="混饭"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/images/avatar.png"><link rel="canonical" href="http://hunfan.top/posts/59149738/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta property="og:type" content="article"><meta property="og:title" content="Linux too many open files问题调查"><meta property="og:url" content="http://hunfan.top/posts/59149738/"><meta property="og:site_name" content="混饭's Notes"><meta property="og:description" content="问题今天发现某netty服务总是报too many open files，因为是新上的服务，设备量并不多，不应该啊，T.T 原因调查一下发生原因：too many open files，字面意思上看就是打开了过多的文件，不过在linux下files并不只是文件的意思，像socket(Tcp、Udp)连接，开启监听的端口这些都属于file，所以有时候也可以叫做句柄(handle)，这个错误也可以描述"><meta property="og:image" content="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><meta property="article:published_time" content="2018-06-05T06:38:14.000Z"><meta property="article:modified_time" content="2020-07-08T02:13:03.056Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="prev" title="避免IDE格式化" href="http://hunfan.top/posts/a7bed227/"><link rel="next" title="使用logrotate对nginx日志按天进行分割" href="http://hunfan.top/posts/c99192e4/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?6cd8ae14adb2fe3dc7047ddfa0d40d73";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"77ZW8HG1F0","apiKey":"924aaf9b16831d3af864330abb1b94cf","indexName":"github","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"top-center"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="混饭's Notes" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/images/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">58</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">53</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">1</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#问题"><span class="toc-number">1.</span> <span class="toc-text">问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#原因"><span class="toc-number">2.</span> <span class="toc-text">原因</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#解决方案"><span class="toc-number">3.</span> <span class="toc-text">解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#深度调查"><span class="toc-number">4.</span> <span class="toc-text">深度调查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#程序解决方案"><span class="toc-number">5.</span> <span class="toc-text">程序解决方案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#TCP端口状态说明"><span class="toc-number">6.</span> <span class="toc-text">TCP端口状态说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1、LISTENING状态"><span class="toc-number">6.1.</span> <span class="toc-text">1、LISTENING状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2、ESTABLISHED状态"><span class="toc-number">6.2.</span> <span class="toc-text">2、ESTABLISHED状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3、CLOSE-WAIT"><span class="toc-number">6.3.</span> <span class="toc-text">3、CLOSE_WAIT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4、TIME-WAIT"><span class="toc-number">6.4.</span> <span class="toc-text">4、TIME_WAIT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5、SYN-SENT状态"><span class="toc-number">6.5.</span> <span class="toc-text">5、SYN_SENT状态</span></a></li></ol></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">混饭's Notes</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Linux too many open files问题调查</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2018-06-05 14:38:14"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2018-06-05</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2020-07-08 10:13:03"><i class="fas fa-history fa-fw"></i> 更新于 2020-07-08</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/uncategorized/">uncategorized</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>今天发现某netty服务总是报too many open files，因为是新上的服务，设备量并不多，不应该啊，T.T</p>
+<h2 id="原因"><a href="#原因" class="headerlink" title="原因"></a>原因</h2><p>调查一下发生原因：<br>too many open files，字面意思上看就是打开了过多的文件，不过在linux下files并不只是文件的意思，像socket(Tcp、Udp)连接，开启监听的端口这些都属于file，所以有时候也可以叫做句柄(handle)，这个错误也可以描述为句柄数（file-handles）超出系统限制。 </p>
+<p>从上述文字描述可以看出，出现这句提示的原因就是程序打开的Socket连接数量超过系统设定值。</p>
+<p>既然是超过了系统的设定值，那么当前用户的设定值是多少呢？</p>
+<p>用命令查一下：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# ulimit -a</span><br><span class="line">core file size          (blocks, -c) 0</span><br><span class="line">data seg size           (kbytes, -d) unlimited</span><br><span class="line">scheduling priority             (-e) 0</span><br><span class="line">file size               (blocks, -f) unlimited</span><br><span class="line">pending signals                 (-i) 31203</span><br><span class="line">max locked memory       (kbytes, -l) 64</span><br><span class="line">max memory size         (kbytes, -m) unlimited</span><br><span class="line">open files                      (-n) 1024</span><br><span class="line">pipe size            (512 bytes, -p) 8</span><br><span class="line">POSIX message queues     (bytes, -q) 819200</span><br><span class="line">real-time priority              (-r) 0</span><br><span class="line">stack size              (kbytes, -s) 8192</span><br><span class="line">cpu time               (seconds, -t) unlimited</span><br><span class="line">max user processes              (-u) 31203</span><br><span class="line">virtual memory          (kbytes, -v) unlimited</span><br><span class="line">file locks                      (-x) unlimited</span><br></pre></td></tr></table></figure>
+
+<p>或者</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# ulimit -n</span><br><span class="line">1024</span><br></pre></td></tr></table></figure>
+
+<p>当前用户open files居然才只有1024，查看一下当前系统已开启的文件数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# lsof | wc -l</span><br><span class="line">-bash: lsof: command not found</span><br></pre></td></tr></table></figure>
+
+<p>0.0，没有安装lsof，yum安装一下</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost ~]# yum install lsof</span><br><span class="line">Loaded plugins: fastestmirror</span><br><span class="line">base                                                     | 3.6 kB     00:00</span><br><span class="line">epel&#x2F;x86_64&#x2F;metalink                                     | 6.7 kB     00:00</span><br><span class="line">epel                                                     | 3.2 kB     00:00</span><br><span class="line">extras                                                   | 3.4 kB     00:00</span><br><span class="line">updates                                                  | 3.4 kB     00:00</span><br><span class="line">(1&#x2F;3): epel&#x2F;x86_64&#x2F;updateinfo                              | 932 kB   00:00</span><br><span class="line">(2&#x2F;3): updates&#x2F;7&#x2F;x86_64&#x2F;primary_db                         | 2.0 MB   00:01</span><br><span class="line">(3&#x2F;3): epel&#x2F;x86_64&#x2F;primary                                 | 3.5 MB   00:01</span><br><span class="line">Loading mirror speeds from cached hostfile</span><br><span class="line"> * base: mirrors.aliyun.com</span><br><span class="line"> * epel: mirrors.aliyun.com</span><br><span class="line"> * extras: mirrors.aliyun.com</span><br><span class="line"> * updates: mirrors.aliyun.com</span><br><span class="line">epel                                                                12585&#x2F;12585</span><br><span class="line">Resolving Dependencies</span><br><span class="line">--&gt; Running transaction check</span><br><span class="line">---&gt; Package lsof.x86_64 0:4.87-5.el7 will be installed</span><br><span class="line">--&gt; Finished Dependency Resolution</span><br><span class="line"></span><br><span class="line">Dependencies Resolved</span><br><span class="line"></span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line"> Package         Arch              Version                Repository       Size</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Installing:</span><br><span class="line"> lsof            x86_64            4.87-5.el7             base            331 k</span><br><span class="line"></span><br><span class="line">Transaction Summary</span><br><span class="line">&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;&#x3D;</span><br><span class="line">Install  1 Package</span><br><span class="line"></span><br><span class="line">Total download size: 331 k</span><br><span class="line">Installed size: 927 k</span><br><span class="line">Is this ok [y&#x2F;d&#x2F;N]: y</span><br><span class="line">Downloading packages:</span><br><span class="line">lsof-4.87-5.el7.x86_64.rpm                                 | 331 kB   00:00</span><br><span class="line">Running transaction check</span><br><span class="line">Running transaction test</span><br><span class="line">Transaction test succeeded</span><br><span class="line">Running transaction</span><br><span class="line">  Installing : lsof-4.87-5.el7.x86_64                                       1&#x2F;1</span><br><span class="line">  Verifying  : lsof-4.87-5.el7.x86_64                                       1&#x2F;1</span><br><span class="line"></span><br><span class="line">Installed:</span><br><span class="line">  lsof.x86_64 0:4.87-5.el7</span><br><span class="line"></span><br><span class="line">Complete!</span><br></pre></td></tr></table></figure>
+
+<p>再查看该进程已打开的文件数</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># wc -l 统计输出信息的行数</span><br><span class="line"># 因为lsof -p pid已经过滤到该进程已打开的文件数，一行信息对应一个文件，所以也就是文件的个数。</span><br><span class="line">[root@localhost ~]# lsof -p pid | wc -l</span><br><span class="line">2858</span><br></pre></td></tr></table></figure>
+
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><p>临时提高一下open files数值</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">ulimit -n 65535</span><br></pre></td></tr></table></figure>
+
+<p>再查看发现open files已更新，但是这种一重启就会还原</p>
+<p>永久更改open files的方法</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">vim &#x2F;etc&#x2F;security&#x2F;limits.conf  </span><br><span class="line"># insert last line</span><br><span class="line"># * 标识所有用户，也可单独设置某一用户，如test soft nofile 65535</span><br><span class="line">* soft nofile 65535  </span><br><span class="line">* hard nofile 65535</span><br></pre></td></tr></table></figure>
+
+<h2 id="深度调查"><a href="#深度调查" class="headerlink" title="深度调查"></a>深度调查</h2><p>使用命令打印程序open files详细日志，进行问题排查。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">[root@localhost &#x2F;]# lsof -p pid &gt; openfiles.log</span><br><span class="line">[root@localhost &#x2F;]# tail -f .&#x2F;openfiles.log</span><br><span class="line"></span><br><span class="line">java    5275 root 2864u     IPv6           23540972       0t0       TCP localhost.localdomain:45214-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">java    5275 root 2865u     IPv6           23540973       0t0       TCP localhost.localdomain:45216-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">java    5275 root 2866u  a_inode                0,9         0      5815 [eventpoll]</span><br><span class="line">java    5275 root 2867u     IPv6           23541135       0t0       TCP localhost.localdomain:45398-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">java    5275 root 2868u     IPv6           23541136       0t0       TCP localhost.localdomain:45401-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">java    5275 root 2869r     FIFO                0,8       0t0  23541164 pipe</span><br><span class="line">java    5275 root 2870w     FIFO                0,8       0t0  23541164 pipe</span><br><span class="line">java    5275 root 2871u  a_inode                0,9         0      5815 [eventpoll]</span><br><span class="line">java    5275 root 2872u     IPv6           23541165       0t0       TCP localhost.localdomain:45433-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">java    5275 root 2873u     IPv6           23541166       0t0       TCP localhost.localdomain:45434-&gt;192.168.0.199:19092 (ESTABLISHED)</span><br><span class="line">....</span><br></pre></td></tr></table></figure>
+
+<p>发现有很多连接处在ESTABLISHED（通讯中）状态，应该是硬件频繁连接，netty持有的channel并没有被释放。</p>
+<h2 id="程序解决方案"><a href="#程序解决方案" class="headerlink" title="程序解决方案"></a>程序解决方案</h2><p>服务添加idle处理，硬件心跳中断一段时间后自动将channel关闭。</p>
+<h2 id="TCP端口状态说明"><a href="#TCP端口状态说明" class="headerlink" title="TCP端口状态说明"></a>TCP端口状态说明</h2><h3 id="1、LISTENING状态"><a href="#1、LISTENING状态" class="headerlink" title="1、LISTENING状态"></a>1、LISTENING状态</h3><p>FTP服务启动后首先处于侦听（LISTENING）状态。</p>
+<h3 id="2、ESTABLISHED状态"><a href="#2、ESTABLISHED状态" class="headerlink" title="2、ESTABLISHED状态"></a>2、ESTABLISHED状态</h3><p>ESTABLISHED的意思是建立连接。表示两台机器正在通信。</p>
+<h3 id="3、CLOSE-WAIT"><a href="#3、CLOSE-WAIT" class="headerlink" title="3、CLOSE_WAIT"></a>3、CLOSE_WAIT</h3><p>对方主动关闭连接或者网络异常导致连接中断，这时我方的状态会变成CLOSE_WAIT 此时我方要调用close()来使得连接正确关闭。</p>
+<h3 id="4、TIME-WAIT"><a href="#4、TIME-WAIT" class="headerlink" title="4、TIME_WAIT"></a>4、TIME_WAIT</h3><p>我方主动调用close()断开连接，收到对方确认后状态变为TIME_WAIT。TCP协议规定TIME_WAIT状态会一直持续2MSL(即两倍的分段最大生存期)，以此来确保旧的连接状态不会对新连接产生影响。处于TIME_WAIT状态的连接占用的资源不会被内核释放，所以作为服务器，在可能的情况下，尽量不要主动断开连接，以减少TIME_WAIT状态造成的资源浪费。目前有一种避免TIME_WAIT资源浪费的方法，就是关闭socket的LINGER选项。但这种做法是TCP协议不推荐使用的，在某些情况下这个操作可能会带来错误。</p>
+<h3 id="5、SYN-SENT状态"><a href="#5、SYN-SENT状态" class="headerlink" title="5、SYN_SENT状态"></a>5、SYN_SENT状态</h3><p>SYN_SENT状态表示请求连接，当你要访问其它的计算机的服务时首先要发个同步信号给该端口，此时状态为SYN_SENT，如果连接成功了就变为 ESTABLISHED，此时SYN_SENT状态非常短暂。但如果发现SYN_SENT非常多且在向不同的机器发出，那你的机器可能中了冲击波或震荡波之类的病毒了。这类病毒为了感染别的计算机，它就要扫描别的计算机，在扫描的过程中对每个要扫描的计算机都要发出了同步请求，这也是出现许多SYN_SENT的原因。</p>
+<p>根据TCP协议定义的3次握手断开连接规定,发起Socket主动关闭的一方Socket将进入TIME_WAIT状态，TIME_WAIT状态将持续2个MSL(Max Segment Lifetime)，在Windows下默认为4分钟,即240秒，TIME_WAIT状态下的socket不能被回收使用。具体现象是对于一个处理大量短连接的服务器，如果是由服务器主动关闭客户端的连接,将导致服务器端存在大量的处于TIME_WAIT状态的socket，甚至比处于Established状态下的socket多的多，严重影响服务器的处理能力,甚至耗尽可用的socket，停止服务。TIME_WAIT是TCP协议用以保证被重新分配的socket不会受到之前残留的延迟重发报文影响的机制，是必要的逻辑保证。</p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">混饭</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://hunfan.top/posts/59149738/">http://hunfan.top/posts/59149738/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://hunfan.top" target="_blank">混饭's Notes</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/linux/">linux</a><a class="post-meta__tags" href="/tags/too-many-open-files/">too many open files</a></div><div class="post_share"><div class="social-share" data-image="/upload/homePage/20200628154000.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/a7bed227/"><img class="prev-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">避免IDE格式化</div></div></a></div><div class="next-post pull-right"><a href="/posts/c99192e4/"><img class="next-cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">使用logrotate对nginx日志按天进行分割</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/posts/b75009fc/" title="Linux Centos7下安装node"><img class="relatedPosts_cover" data-src="/upload/homePage/20200522152500.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-05-22</div><div class="relatedPosts_title">Linux Centos7下安装node</div></div></a></div><div class="relatedPosts_item"><a href="/posts/b1908098/" title="Linux Crontab定时任务生成文件为空，手动执行脚本正常问题"><img class="relatedPosts_cover" data-src="/upload/homePage/20181116140902.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-11-16</div><div class="relatedPosts_title">Linux Crontab定时任务生成文件为空，手动执行脚本正常问题</div></div></a></div><div class="relatedPosts_item"><a href="/posts/37bc6184/" title="Linux下查看文件内容的指令"><img class="relatedPosts_cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-06-21</div><div class="relatedPosts_title">Linux下查看文件内容的指令</div></div></a></div><div class="relatedPosts_item"><a href="/posts/aa32d633/" title="Linux以树形显示文件目录结构"><img class="relatedPosts_cover" data-src="/upload/homePage/20181107114302.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-11-07</div><div class="relatedPosts_title">Linux以树形显示文件目录结构</div></div></a></div><div class="relatedPosts_item"><a href="/posts/f377eb4a/" title="Linux使用timedatectl操作时间时区"><img class="relatedPosts_cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-08-07</div><div class="relatedPosts_title">Linux使用timedatectl操作时间时区</div></div></a></div><div class="relatedPosts_item"><a href="/posts/c4cf9967/" title="Linux查询占用文件的进程"><img class="relatedPosts_cover" data-src="/upload/homePage/20180906170335.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-09-06</div><div class="relatedPosts_title">Linux查询占用文件的进程</div></div></a></div></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'FbdjjSByqhjHC2t0f5DiTzXi-gzGzoHsz',
+  appKey: 'EhyT8E3CKzF9CQcem5hx7ftx',
+  placeholder: '记得留下你的昵称和邮箱...可以快速收到回复',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'en',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: false,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2017 - 2020 By 混饭</div><div class="icp"><a href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"/><span>鲁ICP备19006622号-1 版权所有</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script defer id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/algolia.js"></script></body></html>
