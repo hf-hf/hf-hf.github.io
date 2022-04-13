@@ -1885,36 +1885,6 @@ blockquote footer cite:before {
   -ms-transform: rotate(540deg);
   transform: rotate(540deg);
 }
-#aside_content .card-info .card-info-social-icons .fa-gitee {
-  background-image: url("/images/gitee.png");
-  width: 19.375px;
-  height: 20px;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  -webkit-transform: translateY(20%);
-  -moz-transform: translateY(20%);
-  -o-transform: translateY(20%);
-  -ms-transform: translateY(20%);
-  transform: translateY(20%);
-}
-#aside_content .card-info .card-info-social-icons .fa-tuishuxia {
-  background-image: url("/images/tuishuxia-logo.png");
-  width: 19.375px;
-  height: 20px;
-  -webkit-background-size: cover;
-  -moz-background-size: cover;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  -webkit-transform: translateY(20%);
-  -moz-transform: translateY(20%);
-  -o-transform: translateY(20%);
-  -ms-transform: translateY(20%);
-  transform: translateY(20%);
-}
 #aside_content .card-info #bookmark-it {
   position: relative;
   z-index: 1;
@@ -2092,6 +2062,36 @@ blockquote footer cite:before {
 #aside_content .card-webinfo .webinfo .webinfo-item div:last-child {
   display: inline-block;
   float: right;
+}
+.social-icon .fa-gitee {
+  background-image: url("/images/gitee.png");
+  width: 19.375px;
+  height: 20px;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  -webkit-transform: translateY(20%);
+  -moz-transform: translateY(20%);
+  -o-transform: translateY(20%);
+  -ms-transform: translateY(20%);
+  transform: translateY(20%);
+}
+.social-icon .fa-tuishuxia {
+  background-image: url("/images/tuishuxia-logo.png");
+  width: 19.375px;
+  height: 20px;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  -webkit-transform: translateY(20%);
+  -moz-transform: translateY(20%);
+  -o-transform: translateY(20%);
+  -ms-transform: translateY(20%);
+  transform: translateY(20%);
 }
 @media screen and (max-width: 900px) {
   .layout_page {
@@ -4003,6 +4003,9 @@ img {
 }
 #vcomment button:hover {
   background-color: #ff7242;
+}
+#vcomment textarea {
+  background: url("https://cdn.jsdelivr.net/gh/HCLonely/hclonely.github.io@1.4.7/img/comment_bg.png") 100% 100% no-repeat;
 }
 #vcomment .vimg {
   -webkit-transition: all 0.3s;

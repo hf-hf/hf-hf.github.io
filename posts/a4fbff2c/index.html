@@ -1,0 +1,318 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DBA题目索引设计问题调研 | 混饭's Notes</title><meta name="description" content="题目本题目来源自网络，引用自cnblogs 05 | 深入浅出索引（下），最初出处因搜索结果过多目前无法确定。 DBA小吕在入职新公司的时候，就发现自己接手维护的库里面，有这么一个表，表结构定义类似这样的： CREATE TABLE &#96;geek&#96; (&#96;a&#96; int(11) NOT NULL,&#96;b&#96; int(11) NOT NULL,&#96;c&amp;#9"><meta name="keywords" content="Mysql"><meta name="author" content="混饭"><meta name="copyright" content="混饭"><meta name="format-detection" content="telephone=no"><link rel="shortcut icon" href="/images/avatar.png"><link rel="canonical" href="https://hunfan.top/posts/a4fbff2c/"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//fonts.googleapis.com" crossorigin="crossorigin"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="preconnect" href="//zz.bdstatic.com"/><meta property="og:type" content="article"><meta property="og:title" content="DBA题目索引设计问题调研"><meta property="og:url" content="https://hunfan.top/posts/a4fbff2c/"><meta property="og:site_name" content="混饭's Notes"><meta property="og:description" content="题目本题目来源自网络，引用自cnblogs 05 | 深入浅出索引（下），最初出处因搜索结果过多目前无法确定。 DBA小吕在入职新公司的时候，就发现自己接手维护的库里面，有这么一个表，表结构定义类似这样的： CREATE TABLE &#96;geek&#96; (&#96;a&#96; int(11) NOT NULL,&#96;b&#96; int(11) NOT NULL,&#96;c&amp;#9"><meta property="og:image" content="https://hunfan.top/upload/homePage/20210425115900.jpg"><meta property="article:published_time" content="2021-04-23T09:08:46.000Z"><meta property="article:modified_time" content="2021-05-17T09:19:59.756Z"><meta name="twitter:card" content="summary"><script>var activateDarkMode = function () {
+  document.documentElement.setAttribute('data-theme', 'dark')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#000')
+  }
+}
+var activateLightMode = function () {
+  document.documentElement.setAttribute('data-theme', 'light')
+  if (document.querySelector('meta[name="theme-color"]') !== null) {
+    document.querySelector('meta[name="theme-color"]').setAttribute('content', '#fff')
+  }
+}
+
+var getCookies = function (name) {
+  const value = `; ${document.cookie}`
+  const parts = value.split(`; ${name}=`)
+  if (parts.length === 2) return parts.pop().split(';').shift()
+}
+
+var autoChangeMode = 'false'
+var t = getCookies('theme')
+if (autoChangeMode === '1') {
+  var isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+  var isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+  var isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+  var hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+  if (t === undefined) {
+    if (isLightMode) activateLightMode()
+    else if (isDarkMode) activateDarkMode()
+    else if (isNotSpecified || hasNoSupport) {
+      console.log('You specified no preference for a color scheme or your browser does not support it. I Schedule dark mode during night time.')
+      var now = new Date()
+      var hour = now.getHours()
+      var isNight = hour <= 6 || hour >= 18
+      isNight ? activateDarkMode() : activateLightMode()
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+      if (Cookies.get('theme') === undefined) {
+        e.matches ? activateDarkMode() : activateLightMode()
+      }
+    })
+  } else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else if (autoChangeMode === '2') {
+  now = new Date()
+  hour = now.getHours()
+  isNight = hour <= 6 || hour >= 18
+  if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+  else if (t === 'light') activateLightMode()
+  else activateDarkMode()
+} else {
+  if (t === 'dark') activateDarkMode()
+  else if (t === 'light') activateLightMode()
+}</script><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><link rel="prev" title="字符串编码问题" href="https://hunfan.top/posts/364d7e27/"><link rel="next" title="Mysql优化减少回表操作" href="https://hunfan.top/posts/4bdcd099/"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.css"><script src="https://cdn.jsdelivr.net/npm/instantsearch.js@2.10.5/dist/instantsearch.min.js" defer></script><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?6cd8ae14adb2fe3dc7047ddfa0d40d73";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Titillium+Web&amp;display=swap"><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: {"appId":"EOQFFOF30N","apiKey":"f9225ddc11a8366934d88cf19b7d999e","indexName":"github","hits":{"per_page":6},"languages":{"input_placeholder":"搜索文章","hits_empty":"找不到您查询的内容:${query}","hits_stats":"找到 ${hits} 条结果，用时 ${time} 毫秒"}},
+  localSearch: undefined,
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  bookmark: {
+    message_prev: '按',
+    message_next: '键将本页加入书签'
+  },
+  runtime_unit: '天',
+  runtime: true,
+  copyright: undefined,
+  ClickShowText: undefined,
+  medium_zoom: false,
+  fancybox: true,
+  Snackbar: {"bookmark":{"message_prev":"按","message_next":"键将本页加入书签"},"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"top-center"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  baiduPush: true,
+  highlightCopy: true,
+  highlightLang: true,
+  isPhotoFigcaption: false,
+  islazyload: true,
+  isanchor: false    
+}</script><script>var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isSidebar: true
+  }</script><noscript><style>
+#nav {
+  opacity: 1
+}
+.justified-gallery img{
+  opacity: 1
+}
+</style></noscript><meta name="generator" content="Hexo 4.2.1"><link rel="alternate" href="/atom.xml" title="混饭's Notes" type="application/atom+xml">
+</head><body><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" src="/images/avatar.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">65</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">60</div></a></div></div><div class="mobile_data_item is-center">     <div class="mobile_data_link"><a href="/categories/"><div class="headline">分类</div><div class="length_num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/"><i class="fa-fw fas fa-tv"></i><span> 番剧</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div></div></div><i class="fas fa-arrow-right on" id="toggle-sidebar"></i><div id="sidebar"><div class="sidebar-toc"><div class="sidebar-toc__title">目录</div><div class="sidebar-toc__progress"><span class="progress-notice">你已经读了</span><span class="progress-num">0</span><span class="progress-percentage">%</span><div class="sidebar-toc__progress-bar">     </div></div><div class="sidebar-toc__content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#题目"><span class="toc-number">1.</span> <span class="toc-text">题目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#问题思考"><span class="toc-number">2.</span> <span class="toc-text">问题思考</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#联合主键a，b下的数据排序"><span class="toc-number">2.1.</span> <span class="toc-text">联合主键a，b下的数据排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引ca下的聚簇索引关联数据的排序"><span class="toc-number">2.2.</span> <span class="toc-text">索引ca下的聚簇索引关联数据的排序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#索引cb下的聚簇索引关联数据的排序"><span class="toc-number">2.3.</span> <span class="toc-text">索引cb下的聚簇索引关联数据的排序</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InnoDB引擎索引说明"><span class="toc-number">3.</span> <span class="toc-text">InnoDB引擎索引说明</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#聚簇索引"><span class="toc-number">3.1.</span> <span class="toc-text">聚簇索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#辅助索引"><span class="toc-number">3.2.</span> <span class="toc-text">辅助索引</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#联合索引"><span class="toc-number">3.3.</span> <span class="toc-text">联合索引</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#实践出真知"><span class="toc-number">4.</span> <span class="toc-text">实践出真知</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#拓展思考"><span class="toc-number">5.</span> <span class="toc-text">拓展思考</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#参考资料"><span class="toc-number">6.</span> <span class="toc-text">参考资料</span></a></li></ol></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(/upload/homePage/20210425115900.jpg)"><nav id="nav"><span class="pull-left" id="blog_name"><a class="blog_title" id="site-name" href="/">混饭's Notes</a></span><span class="pull-right menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/bangumis/"><i class="fa-fw fas fa-tv"></i><span> 番剧</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div></div><span class="toggle-menu close"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">DBA题目索引设计问题调研</div></div><div id="post-meta"><div class="meta-firstline"><time class="post-meta__date"><span class="post-meta__date-created" title="发表于 2021-04-23 17:08:46"><i class="far fa-calendar-alt fa-fw"></i> 发表于 2021-04-23</span><span class="post-meta__separator">|</span><span class="post-meta__date-updated" title="更新于 2021-05-17 17:19:59"><i class="fas fa-history fa-fw"></i> 更新于 2021-05-17</span></time><span class="post-meta__categories"><span class="post-meta__separator">|</span><i class="fas fa-inbox fa-fw post-meta__icon"></i><a class="post-meta__categories" href="/categories/uncategorized/">uncategorized</a></span></div><div class="meta-secondline"> </div><div class="meta-thirdline"><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta__icon"></i><span>阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-commentcount"></span></div></div></div></header><main class="layout_post" id="content-inner"><article id="post"><div class="post-content" id="article-container"><h2 id="题目"><a href="#题目" class="headerlink" title="题目"></a>题目</h2><p>本题目来源自网络，引用自<a href="https://www.cnblogs.com/gaosf/p/11142108.html" target="_blank" rel="noopener">cnblogs 05 | 深入浅出索引（下）</a>，最初出处因搜索结果过多目前无法确定。</p>
+<p>DBA小吕在入职新公司的时候，就发现自己接手维护的库里面，有这么一个表，表结构定义类似这样的：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">CREATE TABLE &#96;geek&#96; (</span><br><span class="line">&#96;a&#96; int(11) NOT NULL,</span><br><span class="line">&#96;b&#96; int(11) NOT NULL,</span><br><span class="line">&#96;c&#96; int(11) NOT NULL,</span><br><span class="line">&#96;d&#96; int(11) NOT NULL,</span><br><span class="line">PRIMARY KEY (&#96;a&#96;,&#96;b&#96;),</span><br><span class="line">KEY &#96;c&#96; (&#96;c&#96;),</span><br><span class="line">KEY &#96;ca&#96; (&#96;c&#96;,&#96;a&#96;),</span><br><span class="line">KEY &#96;cb&#96; (&#96;c&#96;,&#96;b&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB;</span><br></pre></td></tr></table></figure>
+
+<p>公司的同事告诉他说，由于历史原因，这个表需要a、b做联合主键，这个小吕理解了。</p>
+<p>但是，学过本章内容的小吕又纳闷了，既然主键包含了a、b这两个字段，那意味着单独在字段c上创建一个索引，就已经包含了三个字段了呀，为什么要创建“ca”“cb”这两个索引？</p>
+<p>同事告诉他，是因为他们的业务里面有这样的两种语句：</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">select * from geek where c&#x3D;N order by a limit 1;</span><br><span class="line">select * from geek where c&#x3D;N order by b limit 1;</span><br></pre></td></tr></table></figure>
+<p>我给你的问题是，这位同事的解释对吗，为了这两个查询模式，这两个索引是否都是必须的？为什么呢？</p>
+<h2 id="问题思考"><a href="#问题思考" class="headerlink" title="问题思考"></a>问题思考</h2><p>首先我们从select的条件来分析一下，这两条查询条件都是一样的唯一的区别是一个是根据a字段排序，另一个根据b字段排序。<br>从查询条件分析，因为都是c=N，该条件索引c、ca、cb都能匹配到（Mysql最左匹配原则）。</p>
+<blockquote>
+<p>最左匹配原则：<br>最左前缀匹配原则, mysql会一直向右匹配直到遇到范围查询(&gt;, &lt;, between, like)就停止匹配, 比如a=1 and b=2 and c&gt;3 and d=4 如果建立了(a,b,c,d)顺序&gt; 的索引, d是用不到索引的, 如果建立(a,b,d,c)的索引, 则都可以使用到, a,b,d的顺序可以任意调整。<br>= 和 in 可以乱序, 比如 a=1 and b=2 and c=3 建立(a,b,c)索引可以任意顺序, mysql 的查询优化器会帮你优化成索引可以识别的形式。</p>
+</blockquote>
+<p>从排序条件分析，在a、b联合主键的前提下，该表的默认排序为order a,b，也就是先按a排序，在按b排序，其他字段无序。此时天然就满足第一个select的order a排序条件，因此ca索引是不必要的，见下方数据排序表格。</p>
+<h3 id="联合主键a，b下的数据排序"><a href="#联合主键a，b下的数据排序" class="headerlink" title="联合主键a，b下的数据排序"></a>联合主键a，b下的数据排序</h3><table>
+<thead>
+<tr>
+<th>a</th>
+<th>b</th>
+<th>c</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>d</td>
+</tr>
+<tr>
+<td>1</td>
+<td>3</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>1</td>
+<td>4</td>
+<td>3</td>
+<td>d</td>
+</tr>
+<tr>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>d</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>4</td>
+<td>d</td>
+</tr>
+</tbody></table>
+<p>先按a排序，在按b排序，其他字段无序。</p>
+<h3 id="索引ca下的聚簇索引关联数据的排序"><a href="#索引ca下的聚簇索引关联数据的排序" class="headerlink" title="索引ca下的聚簇索引关联数据的排序"></a>索引ca下的聚簇索引关联数据的排序</h3><table>
+<thead>
+<tr>
+<th>c</th>
+<th>a</th>
+<th>b(主键部分)</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>1</td>
+<td>3</td>
+<td>d</td>
+</tr>
+<tr>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>4</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>d</td>
+</tr>
+<tr>
+<td>4</td>
+<td>2</td>
+<td>3</td>
+<td>d</td>
+</tr>
+</tbody></table>
+<p>索引ca为非聚簇索引，其叶子节点为聚簇索引的索引值，该聚簇索引值已按ca来排序，通过该索引值可以在聚簇索引的叶子节点获取表数据，该表数据位于聚簇索引叶子节点，因此表数据默认就存在主键a,b排序，所以使用ca索引查询到的数据其排序顺序为：先按c排序，再按a排序，再记录主键b的排序（注意此处起作用的主键部分为b，而不是ab）。</p>
+<p>此时索引ca和索引c的数据是一模一样的。</p>
+<h3 id="索引cb下的聚簇索引关联数据的排序"><a href="#索引cb下的聚簇索引关联数据的排序" class="headerlink" title="索引cb下的聚簇索引关联数据的排序"></a>索引cb下的聚簇索引关联数据的排序</h3><table>
+<thead>
+<tr>
+<th>c</th>
+<th>b</th>
+<th>a(主键部分)</th>
+<th>d</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>2</td>
+<td>2</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>1</td>
+<td>2</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>2</td>
+<td>1</td>
+<td>d</td>
+</tr>
+<tr>
+<td>3</td>
+<td>4</td>
+<td>1</td>
+<td>d</td>
+</tr>
+<tr>
+<td>4</td>
+<td>3</td>
+<td>2</td>
+<td>d</td>
+</tr>
+</tbody></table>
+<p>原因同上，使用cb索引查询到的数据其排序顺序为：先按c排序，在按b排序，再记录主键a的排序。</p>
+<p>所以，结论是ca可以去掉，cb需要保留。</p>
+<h2 id="InnoDB引擎索引说明"><a href="#InnoDB引擎索引说明" class="headerlink" title="InnoDB引擎索引说明"></a>InnoDB引擎索引说明</h2><p>上面提到了聚簇索引和非聚簇索引，之前在<a href="https://hunfan.top/posts/4bdcd099/">Mysql优化减少回表操作</a>一文中其实已经介绍过了，这里结合图文再拓展延伸一下。</p>
+<h3 id="聚簇索引"><a href="#聚簇索引" class="headerlink" title="聚簇索引"></a>聚簇索引</h3><p>Mysql InnoDb每个表都有一个聚簇索引，其取值规则见下方：</p>
+<ul>
+<li>主键存在时以主键为聚簇索引，</li>
+<li>主键不存在时，以第一个不含有null值的唯一索引作为聚簇索引</li>
+<li>以上索引都不存在时，MySQL会创建一个隐藏字段rowid的聚簇索引。<br>每个表的数据按照聚簇索引而聚集在一起形成B+树，其中在最后的叶子节点挂载非索引数据，叶子节点之间存在有序的指针。</li>
+</ul>
+<p><img src= "/img/loading.gif" data-src="/upload/DBA%E9%A2%98%E7%9B%AE%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E9%97%AE%E9%A2%98%E8%B0%83%E7%A0%94/%E8%81%9A%E7%B0%87%E7%B4%A2%E5%BC%95.png" alt="聚簇索引.png"> </p>
+<h3 id="辅助索引"><a href="#辅助索引" class="headerlink" title="辅助索引"></a>辅助索引</h3><p>表中除了聚簇索引外其他非聚簇索引称为二级索引或者辅助索引，辅助索引中的叶子节点不再挂载非索引数据，而是存储聚簇索引的索引值。</p>
+<p><img src= "/img/loading.gif" data-src="/upload/DBA%E9%A2%98%E7%9B%AE%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E9%97%AE%E9%A2%98%E8%B0%83%E7%A0%94/%E8%BE%85%E5%8A%A9%E7%B4%A2%E5%BC%95.png" alt="辅助索引.png"> </p>
+<h3 id="联合索引"><a href="#联合索引" class="headerlink" title="联合索引"></a>联合索引</h3><p>特殊的辅助索引：联合索引，B+树的节点存储的不是一个列数据，而是多个列数据，按照定义的顺序构成一个节点。</p>
+<p><img src= "/img/loading.gif" data-src="/upload/DBA%E9%A2%98%E7%9B%AE%E7%B4%A2%E5%BC%95%E8%AE%BE%E8%AE%A1%E9%97%AE%E9%A2%98%E8%B0%83%E7%A0%94/%E8%81%94%E5%90%88%E7%B4%A2%E5%BC%95.png" alt="联合索引.png"> </p>
+<p>辅助索引和联合索引，可以统称为非聚簇索引，从图上可以看出，非聚簇索引的叶子节点存储是聚簇索引的索引值，但是其是按照非聚簇索引来排序的，因此我们使用合理的索引可以减少Mysql的Using filesort，原因就在这里。而数据存储在聚簇索引的叶子节点，所以我们通过非聚簇索引查询到聚簇索引值时，还需要再去聚簇索引上查找表数据，这就是所谓的回表操作，执行回表操作的数据量越少，我们相应查询消耗的时间也会越少。聚簇索引叶子节点的表数据，是根据聚簇索引来排序的，按照大部分的情况，聚簇索引都是表的主键，所以表数据默认是按照主键升序的，结合主键来创建索引，可以减少很多不必要的索引创建。但是我们要记住索引的创建还是根据真实的检索条件来的，比如一个有a,b,c三个字段的数据表，如果我们的最常使用的查询就是select xxx where a=n and b=n and c=n，那么我们只需要创建一个a,b,c的联合索引，尽量建立聚合索引而不是多个单索引，where条件后面按照聚合索引列作为条件，减少查询聚簇索引时匹配的数据行。</p>
+<blockquote>
+<p>ICP(index_condition_pushdown)<br>在索聚簇索引树查询数据行之前，匹配的数据行越少，越精确则查询效率越高。ICP(index_condition_pushdown)技术就是优化的这部分，旨在尽量减少数据行加载到&gt; 内存中。在InnoDB引擎中ICP只支持联合索引，因为聚簇索引能直接锁定要查询的数据行，无法继续再筛选(聚簇索引只有一个索引)，而联合索引则是至少2个索引，在第一个索引匹配的行数和后续其他联合索引匹配的行数处理后，再回表到聚簇索引树中查询数据，这样聚簇索引树中的数据行就会缩减，从而提高效率。ICP技术是默认开启的。explain提示信息为：Using index condition，设置参数为：index_condition_pushdown。</p>
+</blockquote>
+<h2 id="实践出真知"><a href="#实践出真知" class="headerlink" title="实践出真知"></a>实践出真知</h2><p>运行环境为Mysql5.7.24。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 查询Mysql版本</span><br><span class="line">select version();</span><br><span class="line">5.7.24</span><br><span class="line"># 创建geek数据表</span><br><span class="line">CREATE TABLE &#96;geek&#96; (</span><br><span class="line">&#96;a&#96; int(11) NOT NULL,</span><br><span class="line">&#96;b&#96; int(11) NOT NULL,</span><br><span class="line">&#96;c&#96; int(11) NOT NULL,</span><br><span class="line">&#96;d&#96; int(11) NOT NULL,</span><br><span class="line">PRIMARY KEY (&#96;a&#96;,&#96;b&#96;),</span><br><span class="line">KEY &#96;c&#96; (&#96;c&#96;),</span><br><span class="line">KEY &#96;ca&#96; (&#96;c&#96;,&#96;a&#96;),</span><br><span class="line">KEY &#96;cb&#96; (&#96;c&#96;,&#96;b&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB;</span><br></pre></td></tr></table></figure>
+
+<p>使用explain分析查询语句。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line">explain select * from geek where c&#x3D;1 order by a limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek    ref    c,ca,cb       c       4     const    1     100.00  Using index condition</span><br><span class="line"></span><br><span class="line">explain select * from geek where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek    ref    c,ca,cb       c       4     const    1     100.00  Using index condition; Using filesort</span><br><span class="line"></span><br><span class="line"># 此时我们删掉ca索引</span><br><span class="line">drop index ca on geek;</span><br><span class="line"># 重新运行explain select...</span><br><span class="line">explain select * from geek where c&#x3D;1 order by a limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek   ref     c,cb          c       4     const    1     100.00  Using index condition</span><br><span class="line"></span><br><span class="line">explain select * from geek where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek   ref     c,cb          c       4     const    1     100.00  Using index condition; Using filesort</span><br><span class="line"># 可以看到最终的执行效果是没有变化的，ca索引是可以去掉的</span><br><span class="line"># 但是我们看到order by b的查询语句，实际使用的是索引c，并且Extra中存在Using filesort，这说明其进行了额外的文件排序</span><br><span class="line"># 我们强制让其使用cb索引看一下分析结果</span><br><span class="line">explain select * from geek force index(cb) where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek   ref     c,cb          cb     4      const    1     100.00  Using index condition</span><br><span class="line"># 可以看到Using filesort没有了，但是为什么不强制使用索引cb，Mysql就不会选择到最优的cb索引来执行查询呢？</span><br></pre></td></tr></table></figure>
+
+<h2 id="拓展思考"><a href="#拓展思考" class="headerlink" title="拓展思考"></a>拓展思考</h2><p>通过实际运行explain分析查询的select语句来验证了我们的问题思考，但是在最后又产生了一个新的问题，我们发现执行select xxx order by b语句时，若不强制其使用cb索引，实际只会使用索引c，导致explain的分析中显示其在查询到结果数据后又使用了文件排序（Using filesort）。</p>
+<p>现在我们通过对比测试，来分析一下具体是什么原因导致的产生这个问题。</p>
+<figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"># 首先我们删除原来的测试表geek</span><br><span class="line">drop table geek;</span><br><span class="line"># 移除原建表语句中的主键b以及索引ca，创建数据表</span><br><span class="line">CREATE TABLE &#96;geek&#96; (</span><br><span class="line">&#96;a&#96; int(11) NOT NULL,</span><br><span class="line">&#96;b&#96; int(11) NOT NULL,</span><br><span class="line">&#96;c&#96; int(11) NOT NULL,</span><br><span class="line">&#96;d&#96; int(11) NOT NULL,</span><br><span class="line">PRIMARY KEY (&#96;a&#96;),</span><br><span class="line">KEY &#96;c&#96; (&#96;c&#96;),</span><br><span class="line">KEY &#96;cb&#96; (&#96;c&#96;,&#96;b&#96;)</span><br><span class="line">) ENGINE&#x3D;InnoDB;</span><br><span class="line"># 运行explain select...</span><br><span class="line">explain select * from geek where c&#x3D;1 order by a limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek   ref    c,cb           c      4      const    1     100.00  Using index condition</span><br><span class="line"></span><br><span class="line">explain select * from geek where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1    SIMPLE      geek   ref    c,cb           cb     4      const    1     100.00  Using index condition</span><br><span class="line"># 可以看到在只有主键a的情况下，分析执行两条select...，其都匹配到了最佳的索引</span><br><span class="line"># order by b，这一条也显示使用了索引cb</span><br><span class="line"># 目前我们和上一节中运行的唯一区别就是由原来的联合主键a,b改为了主键a，移除了主键b</span><br><span class="line"># 为了排除是否为联合索引引起的问题，这边又测试了改为联合主键a,c、联合主键a,d的两种情况</span><br><span class="line"># 这里省略的修改数据表的语句，其分析结果见下方</span><br><span class="line"># 联合主键a,c</span><br><span class="line">explain select * from geek where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered  Extra</span><br><span class="line">1   SIMPLE       geek   ref    c,cb           cb     4      const    1     100.00  Using index condition</span><br><span class="line"># 联合主键a,d</span><br><span class="line">explain select * from geek where c&#x3D;1 order by b limit 1;</span><br><span class="line">id  select_type  table  type  possible_keys   key  key_len  ref    rows  filtered   Extra</span><br><span class="line">1   SIMPLE       geek   ref     c,cb          cb     4      const    1     100.00   Using where; Using index</span><br><span class="line"># 从现在的结果可以看出，除了联合主键a,b的情况下会出现Using filesort并只匹配到索引c，其他诸如主键a、主键a,c、主键a,d均能匹配到索引cb</span><br></pre></td></tr></table></figure>
+
+<p>由此我们可以得出结论，只有b字段参与联合主键的情况下，才会导致select * from geek where c=1 order by b limit 1，未能匹配到索引cb，仅能匹配到索引c。那么根据之前了解到的Mysql InnoDb索引原理以及B+树的结构，我们可以推测select * from geek where c=1 order by b limit 1，其根据非聚簇索引（辅助索引）c查询到叶子节点（聚簇索引），使用聚簇索引值去聚簇索引树中查询表数据，发现聚簇索引a,b包含排序条件b，此时就直接在当前数据下进行文件排序并返回结果，因此才会产生Using filesort的出现。<br>我这边推测其产生的原因在于聚簇索引下的表数据，本身就是以联合主键a，b排序，此时要返回order by b的数据，直接在其基础上以排序算法来进行文件排序，效率可能比匹配cb要更优，或者这个干脆就是Mysql当前版本下的一个bug，如果有知道详细原因的朋友，不吝赐教。</p>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://www.cnblogs.com/gaosf/p/11142108.html" target="_blank" rel="noopener">05 | 深入浅出索引（下）</a><br><a href="https://www.cnblogs.com/gaosf/p/11142112.html" target="_blank" rel="noopener">06 | 全局锁和表锁 ：给表加个字段怎么有这么多阻碍？</a><br><a href="https://blog.csdn.net/weixin_39918682/article/details/111278002" target="_blank" rel="noopener">mysql 联合主键_搞懂MySQL中的SQL优化，就靠这篇文章了</a><br><a href="https://blog.csdn.net/qq_26975307/article/details/91367232" target="_blank" rel="noopener">多个索引时，mysql索引的命中规则</a></p>
+</div><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">混饭</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://hunfan.top/posts/a4fbff2c/">https://hunfan.top/posts/a4fbff2c/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://hunfan.top" target="_blank">混饭's Notes</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Mysql/">Mysql</a></div><div class="post_share"><div class="social-share" data-image="/upload/homePage/20181105161104.jpg" data-sites="wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"/><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js"></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/364d7e27/"><img class="prev-cover" data-src="/upload/homePage/20210426115900.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">字符串编码问题</div></div></a></div><div class="next-post pull-right"><a href="/posts/4bdcd099/"><img class="next-cover" data-src="/upload/homePage/20210414152100.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Mysql优化减少回表操作</div></div></a></div></nav><div class="relatedPosts"><div class="relatedPosts_headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts_list"><div class="relatedPosts_item"><a href="/posts/9c6dc1e8/" title="Mysql FEDREATED存储引擎"><img class="relatedPosts_cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-08-31</div><div class="relatedPosts_title">Mysql FEDREATED存储引擎</div></div></a></div><div class="relatedPosts_item"><a href="/posts/4bdcd099/" title="Mysql优化减少回表操作"><img class="relatedPosts_cover" data-src="/upload/homePage/20210414152100.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2021-04-14</div><div class="relatedPosts_title">Mysql优化减少回表操作</div></div></a></div><div class="relatedPosts_item"><a href="/posts/f712a5dd/" title="Mysql关于INSERT INTO...ON DUPLICATE KEY UPDATE问题分析"><img class="relatedPosts_cover" data-src="/upload/homePage/20190104095502.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2019-01-04</div><div class="relatedPosts_title">Mysql关于INSERT INTO...ON DUPLICATE KEY UPDATE问题分析</div></div></a></div><div class="relatedPosts_item"><a href="/posts/c15a9847/" title="Mysql关于blob数据类型使用mysqldump导出乱码问题解决"><img class="relatedPosts_cover" data-src="/upload/homePage/20200611092200.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2020-06-11</div><div class="relatedPosts_title">Mysql关于blob数据类型使用mysqldump导出乱码问题解决</div></div></a></div><div class="relatedPosts_item"><a href="/posts/f29ce59c/" title="Mysql判断字符串是否包含某字符串的方法"><img class="relatedPosts_cover" data-src="/upload/homePage/20181105161103.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-11-05</div><div class="relatedPosts_title">Mysql判断字符串是否包含某字符串的方法</div></div></a></div><div class="relatedPosts_item"><a href="/posts/12e5694d/" title="Mysql新建表提示Row size too large (> 8126)"><img class="relatedPosts_cover" data-src="https://i.loli.net/2020/05/01/gkihqEjXxJ5UZ1C.jpg"><div class="relatedPosts_main is-center"><div class="relatedPosts_date"><i class="far fa-calendar-alt fa-fw"></i> 2018-06-27</div><div class="relatedPosts_title">Mysql新建表提示Row size too large (> 8126)</div></div></a></div></div></div><hr><div id="post-comment"><div class="comment_headling"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div class="vcomment" id="vcomment"></div><script src="https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js"></script><script>var requestSetting = function (from,set) {
+  var from = from
+  var setting = set.split(',').filter(function(item){
+  return from.indexOf(item) > -1
+  });
+  setting = setting.length == 0 ? from :setting;
+  return setting
+}
+
+var guestInfo = requestSetting(['nick','mail','link'],'nick,mail,link')
+var requiredFields = requestSetting(['nick','mail'],'nick,mail')
+
+window.valine = new Valine({
+  el:'#vcomment',
+  appId: 'LEWTfhsk302tKaD1iI6FGP7u-MdYXbMMI',
+  appKey: 'XGkTU9K70vgJ4kwFp9GIeJNW',
+  placeholder: '记得留下你的昵称和邮箱...可以快速收到回复',
+  avatar: 'monsterid',
+  meta: guestInfo,
+  pageSize: '10',
+  lang: 'zh-CN',
+  recordIP: false,
+  serverURLs: '',
+  emojiCDN: '',
+  emojiMaps: "",
+  enableQQ: false,
+  requiredFields: requiredFields
+});</script></div></article></main><footer id="footer" data-type="color"><div id="footer-wrap"><div class="copyright">&copy;2017 - 2022 By 混饭</div><div class="icp"><a href="http://www.beian.miit.gov.cn/" target="_blank" rel="noopener"><img class="icp-icon" src="/img/icp.png"/><span>鲁ICP备19006622号-1 版权所有</span></a></div></div></footer></div><section class="rightside" id="rightside"><div id="rightside-config-hide"><button id="readmode" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font_plus" title="放大字体"><i class="fas fa-plus"></i></button><button id="font_minus" title="缩小字体"><i class="fas fa-minus"></i></button><button class="translate_chn_to_cht" id="translateLink" title="简繁转换">繁</button><button id="darkmode" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="scroll_to_comment fas fa-comments"></i></a><button class="close" id="mobile-toc-button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="algolia-search"><div class="search-dialog__title" id="algolia-search-title">Algolia</div><div id="algolia-input-panel"><div id="algolia-search-input"></div></div><hr/><div id="algolia-search-results"><div id="algolia-hits"></div><div id="algolia-pagination"></div><div id="algolia-stats"></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div class="search-mask"></div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script defer id="ribbon" src="/js/third-party/canvas-ribbon.js" size="150" alpha="0.6" zIndex="-1" mobile="false" data-click="true"></script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script><script src="https://cdn.jsdelivr.net/npm/instant.page/instantpage.min.js" type="module" defer></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js" async></script><script src="/js/search/algolia.js"></script></body></html>
